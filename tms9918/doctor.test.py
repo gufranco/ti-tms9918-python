@@ -364,6 +364,38 @@ class HarnessTest(unittest.TestCase):
         # Assert
         self.assertFalse(found.ok)
 
+    def test_the_processor_is_looked_for_inside_the_submodule_folder(self) -> None:
+        # Arrange
+        where = Path(tempfile.mkdtemp())
+        (where / "z80").mkdir()
+        (where / "z80" / "__init__.py").write_text("")
+
+        # Act
+        found = doctor.look_in(where)("z80")
+
+        # Assert
+        self.assertEqual(found.origin, str(where / "z80" / "__init__.py"))
+
+    def test_and_a_folder_without_it_finds_nothing(self) -> None:
+        # Arrange
+        where = Path(tempfile.mkdtemp())
+
+        # Act
+        found = doctor.look_in(where)("z80")
+
+        # Assert
+        self.assertIsNone(found)
+
+    def test_the_folder_looked_in_is_the_one_the_census_reads(self) -> None:
+        # Arrange
+        expected = doctor.ROOT / "zilog-z80-python"
+
+        # Act
+        held = doctor.PROCESSOR
+
+        # Assert
+        self.assertEqual(held, expected)
+
 
 class ReportTest(unittest.TestCase):
     def test_a_clean_run_says_so_and_returns_zero(self) -> None:

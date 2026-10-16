@@ -4,7 +4,7 @@ The Texas Instruments TMS9918A, TMS9928A and TMS9929A video display processors, 
 
 [![CI](https://github.com/gufranco/ti-tms9918-python/actions/workflows/ci.yml/badge.svg)](https://github.com/gufranco/ti-tms9918-python/actions/workflows/ci.yml)
 
-**348** distinct SG-1000 images booted for **600** frames each, **0** property failures over the **203** retail ones, **62** quotes located in the manual, **3** parts, **633** tests, **100%** statement and branch coverage, no dependencies
+**348** distinct SG-1000 images booted for **600** frames each, **0** property failures over the **203** retail ones, **62** quotes located in the manual, **3** parts, **636** tests, **100%** statement and branch coverage, no dependencies
 
 ```python
 import tms9918

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import hashlib
-import importlib.util
+import importlib.machinery
 import json
 import platform
 import re
@@ -43,6 +43,16 @@ DOCUMENTS = ROOT / "conformance" / "documents.json"
 HELD_DOCUMENTS = ROOT / "docs"
 
 HARNESS_MODULE = "z80"
+
+PROCESSOR = ROOT / "zilog-z80-python"
+
+
+def look_in(where: Path) -> Callable[[str], Any]:
+    return lambda name: importlib.machinery.PathFinder.find_spec(name, [str(where)])
+
+
+IN_SUBMODULE = look_in(PROCESSOR)
+
 
 OLDEST_PYTHON = (3, 12)
 
@@ -262,7 +272,7 @@ def _corpus(path: Path | str = CORPUS) -> Finding:
     )
 
 
-def _harness(find: Callable[[str], Any] = importlib.util.find_spec) -> Finding:
+def _harness(find: Callable[[str], Any] = IN_SUBMODULE) -> Finding:
     try:
         found = find(HARNESS_MODULE)
     except Exception as error:
