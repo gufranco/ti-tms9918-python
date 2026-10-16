@@ -1,0 +1,3 @@
+[submodule "zilog-z80-python"]
+	path = zilog-z80-python
+	url = https://github.com/gufranco/zilog-z80-python.git

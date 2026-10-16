@@ -1,0 +1,108 @@
+[build-system]
+requires = ["setuptools>=84.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tms9918"
+description = "The TI TMS9918A, TMS9928A and TMS9929A video display processors, modelled one master clock tick at a time and held to the 1982 TI data manual."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.12"
+dynamic = ["version"]
+keywords = [
+  "texas-instruments",
+  "tms9918a",
+  "tms9928a",
+  "tms9929a",
+  "vdp",
+  "sg-1000",
+  "retrocomputing",
+  "hardware-model",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Topic :: System :: Emulators",
+  "Typing :: Typed",
+]
+
+[project.urls]
+Homepage = "https://github.com/gufranco/ti-tms9918-python"
+Source = "https://github.com/gufranco/ti-tms9918-python"
+Issues = "https://github.com/gufranco/ti-tms9918-python/issues"
+
+[project.scripts]
+tms9918-doctor = "tms9918.doctor:main"
+
+[tool.setuptools]
+packages = ["tms9918"]
+
+[tool.setuptools.dynamic]
+version = { attr = "tms9918.version.VERSION" }
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+extend-exclude = ["zilog-z80-python"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM", "RUF", "PL", "BLE", "C4", "N", "A", "T20", "PTH"]
+ignore = [
+  "PLR0913",
+  "PLR2004",
+  "PLR0912",
+  "PLR0915",
+  "PLR0911",
+  "PLC0415",
+  "PLR0917",
+  "E501",
+  "N818",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tms9918/environment.py" = ["BLE001", "T201"]
+"*.test.py" = ["PLR2004", "N999"]
+"conformance/*.py" = ["T201"]
+"conformance/census.py" = ["BLE001", "T201"]
+"tms9918/doctor.py" = ["BLE001", "T201"]
+
+[tool.mypy]
+strict = true
+python_version = "3.12"
+warn_unreachable = true
+warn_no_return = true
+strict_equality = true
+extra_checks = true
+enable_error_code = [
+  "explicit-override",
+  "ignore-without-code",
+  "possibly-undefined",
+  "redundant-expr",
+  "truthy-bool",
+  "truthy-iterable",
+  "unused-awaitable",
+]
+files = ["tms9918", "conformance"]
+
+[[tool.mypy.overrides]]
+module = ["z80.*"]
+follow_imports = "skip"
+ignore_missing_imports = true
+
+[tool.coverage.run]
+source = ["tms9918", "conformance"]
+branch = true
+
+[tool.coverage.report]
+fail_under = 100
+show_missing = true
+exclude_also = [
+  'if __name__ == "__main__":',
+  'if TYPE_CHECKING:',
+  '^\s*\.\.\.$',
+  ': \.\.\.$',
+]
