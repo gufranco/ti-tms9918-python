@@ -1,0 +1,524 @@
+{
+  "note": "What Texas Instruments printed about the TMS9918A, TMS9928A and TMS9929A, fact by fact, with the sentence each was read from. Facts the manual does not print sit under notStated, each naming where its value came from and the measurement that would settle it. Where two sources part, divergences.json says which way this package went.",
+  "authority": {
+    "order": [
+      "hardware.json facts, for anything Texas Instruments printed in its 1982 data manual",
+      "the SG-1000 cartridge library, for which registers, modes and sprite configurations real software reaches, counted by conformance/census.py",
+      "openMSX, for the dot positions of the processor's video memory windows, which the manual bounds but does not place, and for the line on which those windows switch",
+      "MAME, for behaviour the manual leaves unstated and openMSX does not model, counted with openMSX as one lineage because both follow Sean Young's tms9918a.txt",
+      "nothing else"
+    ],
+    "why": "The data manual is the only manufacturer document and it is a scan read twice, so it decides every fact it prints. It bounds the processor's video memory access time without placing the windows, and it says nothing of what undocumented register combinations do, so those rest on implementations that are leads rather than authorities and are marked verified false. The cartridge library decides which of those unstated corners real software ever reaches, which is what says how much each one matters.",
+    "comparedAgainst": {
+      "runner": "conformance/census.py",
+      "what": "Every SG-1000 image in a real library, booted on this model behind the zilog-z80-python processor, with the register writes, modes and sprite configurations it reaches counted."
+    }
+  },
+  "part": "TMS9918A, TMS9928A and TMS9929A video display processors",
+  "verified": true,
+  "documents": {
+    "dataManual": {
+      "publisher": "Texas Instruments",
+      "title": "TMS9918A/TMS9928A/TMS9929A Video Display Processors Data Manual",
+      "date": "November 1982",
+      "readOn": "2026-10-16",
+      "retrievedFrom": "https://bitsavers.org/components/ti/TMS9900/TMS9918A_TMS9928A_TMS9929A_Video_Display_Processors_Data_Manual_Nov82.pdf",
+      "sha256": "3991f0c691b83036bbb96d8e60e8d4ed4cfbb5eed9567ad61737570771113450",
+      "bytes": 6785534,
+      "pages": 105,
+      "file": "TMS9918A_TMS9928A_TMS9929A_Video_Display_Processors_Data_Manual_Nov82.pdf",
+      "pageRule": "Printed pages are numbered by section. Page 2-n is file page n + 9, page 3-n is file page n + 43, and page 5-n is file page n + 78.",
+      "howRead": "Read twice. The scan's text layer was read in full, all 6,391 lines. File pages 26, 51, 90 and 92 were then rendered at 150 dpi and read as images, because they carry tables and figures that the text layer garbles. Every quote below is matched against the text layer flattened to letters and digits."
+    }
+  },
+  "facts": {
+    "addressRegister": {
+      "value": {
+        "bits": 14,
+        "autoincrements": true
+      },
+      "quote": "The CPU transfers data to the VRAM through the VDP using a 14-bit autoincrementing address register.",
+      "page": "2-3",
+      "document": "dataManual",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "writeSetup": {
+      "value": 64,
+      "quote": "During setup of the address register, the two MSBs of the second address byte must be 0 and 1 respectively.",
+      "page": "2-3",
+      "document": "dataManual",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "readSetupPrefetch": {
+      "value": true,
+      "quote": "By setting up the address this way, a read cycle to VRAM is initiated and read data will be available for the first data transfer to the CPU.",
+      "page": "2-4",
+      "document": "dataManual",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "accessTime": {
+      "value": {
+        "afterDataMicroseconds": 8,
+        "afterSetupMicroseconds": 2
+      },
+      "quote": "The VDP requires approximately 8 microseconds to fetch the VRAM byte following the last data transfer and 2 microseconds following address setup.",
+      "page": "2-4",
+      "document": "dataManual",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "graphicsWindows": {
+      "value": 16,
+      "quote": "During the active display, CPU windows occur once every 16 memory cycles giving a maximum delay of 6 microseconds (a memory cycle takes about 372 nanoseconds).",
+      "page": "2-4",
+      "document": "dataManual",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "textWindows": {
+      "value": 3,
+      "quote": "In the Text mode the CPU windows occur at least once out of every three memory cycles or a worst case delay of about 1.1 microseconds.",
+      "page": "2-4",
+      "document": "dataManual",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "multicolorWindows": {
+      "value": 4,
+      "quote": "Finally, in the Multicolor mode, CPU windows occur at least once out of every four memory cycles.",
+      "page": "2-4",
+      "document": "dataManual",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "blankedAccess": {
+      "value": "no wait for a window",
+      "quote": "With this bit low, the entire screen will show only border color and the VDP does not have to wait for a CPU access window at any time.",
+      "page": "2-4",
+      "document": "dataManual",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "interruptCleared": {
+      "value": "reading the status",
+      "quote": "Interrupts are cleared when the status register is read.",
+      "page": "2-5",
+      "document": "dataManual",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "reset": {
+      "value": {
+        "clearsRegisters": [0, 1],
+        "setsCounters": "to known states the manual does not name"
+      },
+      "quote": "sets the horizontal and vertical counters to known states, and clears VDP registers 0 and 1.",
+      "page": "2-5",
+      "document": "dataManual",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "refreshWhileBlanked": {
+      "value": true,
+      "quote": "The VDP, however, continues to refresh the VRAM even though the display is blanked.",
+      "page": "2-5",
+      "document": "dataManual",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "blank": {
+      "value": 64,
+      "quote": "Blanking causes the display to show border color only",
+      "page": "2-5",
+      "document": "dataManual",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "tableBases": {
+      "value": {
+        "2": 1024,
+        "3": 64,
+        "4": 2048,
+        "5": 128,
+        "6": 2048
+      },
+      "quotes": [
+        "thus the Name Table base address is equal to (Register 2) *400(hex).",
+        "thus the Color Table base address is equal to (Register 3) *40(hex).",
+        "thus the Generator base address is equal to (Register 4) *800(hex).",
+        "thus the base address is equal to (Register 5) *80(hex).",
+        "thus the Sprite Pattern Generator base address is equal to (Register 6) *800(hex)."
+      ],
+      "page": "2-7",
+      "document": "dataManual",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "register7": {
+      "value": {
+        "high": "text colour 1",
+        "low": "text colour 0 and the backdrop"
+      },
+      "quotes": [
+        "The upper 4 bits of Register 7 contain the color code of color 1 in the Text mode.",
+        "The lower 4 bits contain the color code for color 0 in the Text mode and the backdrop color in all modes."
+      ],
+      "page": "2-7",
+      "document": "dataManual",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "frameFlag": {
+      "value": "set when the last active line ends",
+      "quote": "The F status flag in the status register is set to 1 at the end of the raster scan of the last line of the active display.",
+      "page": "2-11",
+      "document": "dataManual",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "frameFlagCleared": {
+      "value": "by a status read or a reset",
+      "quote": "It is reset to a 0 after the status register is read or when the VDP is externally reset.",
+      "page": "2-11",
+      "document": "dataManual",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "coincidence": {
+      "value": 32,
+      "quotes": [
+        "The C status flag in the status register is set to a 1 if two or more sprites coincide.",
+        "The C flag is cleared to a 0 after the status register is read or the VDP is externally reset.",
+        "The VDP checks each pixel position for coincidence during the generation of the pixel regardless of where it is located on the screen"
+      ],
+      "page": "2-11",
+      "document": "dataManual",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "fifthSpriteNoInterrupt": {
+      "value": true,
+      "quote": "The setting of the fifth sprite flag will not cause an interrupt.",
+      "page": "2-11",
+      "document": "dataManual",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "fourPerLine": {
+      "value": 4,
+      "quotes": [
+        "Only four sprites can be active on any horizontal line.",
+        "The fifth and subsequent sprites are not displayed on that line."
+      ],
+      "page": "2-16",
+      "document": "dataManual",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "planePriority": {
+      "value": "plane 0 in front",
+      "quote": "Sprite 0 is on the outside or highest plane, and sprite 31 is on the plane immediately adjacent to Pattern Plane.",
+      "page": "2-16",
+      "document": "dataManual",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "transparentBackdrop": {
+      "value": "black, or external video when it is selected",
+      "quote": "When the backdrop color register contains the transparent code, the backdrop automatically defaults to black if the external VDP mode is not selected.",
+      "page": "2-16",
+      "document": "dataManual",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "noSpritesInText": {
+      "value": true,
+      "quote": "The 32 Sprite Planes are used for the 32 sprites in the Multicolor and Graphics modes. They are not used in the Text mode and are automatically transparent.",
+      "page": "2-16",
+      "document": "dataManual",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "graphicsOne": {
+      "value": [0, 0, 0],
+      "quote": "The VDP is in Graphics I mode when M1, M2, and M3 bits in VDP registers 1 and 0 are zero.",
+      "page": "2-17",
+      "document": "dataManual",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "graphicsTwo": {
+      "value": [0, 0, 1],
+      "quotes": [
+        "The VDP is in the Graphics II mode bits (M1 = 0, M2 = 0 and M3 = 1).",
+        "segments the display screen into three equal parts of 256 pattern positions each",
+        "may be located in the upper or lower half of 16K memory based on the MSB of the pattern generator base in VDP Register 4."
+      ],
+      "page": "2-19",
+      "document": "dataManual",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "multicolor": {
+      "value": {
+        "squares": [64, 48],
+        "secondNameRowBytes": [3, 4]
+      },
+      "quotes": [
+        "Multicolor mode provides an unrestricted 64 x 48 color square display.",
+        "The next row of names (32-63) uses the bytes 3 and 4 within the 8-byte segments."
+      ],
+      "page": "2-21",
+      "document": "dataManual",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "text": {
+      "value": {
+        "columns": 40,
+        "rows": 24,
+        "width": 6
+      },
+      "quotes": [
+        "In this mode, the screen is divided into a grid of 40 text positions across and 24 down.",
+        "the least significant 2 bits of each text pattern are ignored, yielding 6 x 8 bits in each text pattern."
+      ],
+      "page": "2-23",
+      "document": "dataManual",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "spriteTop": {
+      "value": -1,
+      "quote": "It is defined such that a value of -1 puts the sprite butted up at the top of the screen, touching the backdrop area.",
+      "page": "2-26",
+      "document": "dataManual",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "earlyClock": {
+      "value": 32,
+      "quotes": [
+        "The MSB is the Early Clock",
+        "When set to 1, the horizontal position of the sprite is shifted to the left by 32 pixels."
+      ],
+      "page": "2-26",
+      "document": "dataManual",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "terminator": {
+      "value": 208,
+      "quote": "This permits the Sprite Attribute Table to be shortened to the minimum size required",
+      "page": "2-27",
+      "document": "dataManual",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "magnification": {
+      "value": 2,
+      "quote": "each bit in the Sprite Generator maps into 2 x 2 pixels on the TV screen, effectively doubling the size of the sprite to 16 x 16.",
+      "page": "2-27",
+      "document": "dataManual",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "dividers": {
+      "value": {
+        "dot": 2,
+        "cpuclk": 3,
+        "gromclk": 24,
+        "pinsOn": ["tms9918a"]
+      },
+      "quotes": [
+        "This master clock is divided by two to generate the pixel clock (5.3 MHz) and by three to provide the CPUCLK (3.58 MHz for TMS9918A only).",
+        "The GROMCLK is developed from the master clock frequency divided by 24 (3.58 MHz for TMS9928A only)."
+      ],
+      "page": "3-8",
+      "document": "dataManual",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "lineTable": {
+      "value": {
+        "pattern": [256, 15, 8, 26, 2, 14, 8, 13],
+        "text": [240, 25, 8, 26, 2, 14, 8, 19],
+        "vertical": [192, 24, 3, 3, 13, 27]
+      },
+      "quote": "Table 3-3 gives the relative count values of the screen display parameters.",
+      "page": "3-8",
+      "document": "dataManual",
+      "readFrom": "The text layer for every cell but the top-blanking count, which it garbles; the page image for all of them. Both agree wherever both are legible, and Section 5.5's 828 microsecond back blanking is 13 lines of 63.695 microseconds.",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "frameLines": {
+      "value": {
+        "tms9918a": 262,
+        "tms9928a": 262,
+        "tms9929a": 313
+      },
+      "quotes": [
+        "operates at 262 lines per frame and approximately 60 frames per second in a noninterlaced mode of operation.",
+        "The TMS9929A operates at 313 lines per frame and approximately 50 frames per second in a noninterlaced mode of operation."
+      ],
+      "page": "3-8",
+      "document": "dataManual",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "externalVideo": {
+      "value": 1,
+      "quote": "For the External VDP input plane to be visible, the External VDP Enable bit in VDP Register 0 (EXVID) should be set to a 1.",
+      "page": "3-8",
+      "document": "dataManual",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "memoryCycle": {
+      "value": 372,
+      "quote": "Memory read or write cycle time 372 ns",
+      "page": "5-4",
+      "document": "dataManual",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "colourLevels": {
+      "value": "levels.py, row for row",
+      "quotes": [
+        "The VDP can display the 15 colors shown in Table 2-3.",
+        "the luminance value in the table indicates these levels, 0.00 being black and 1.00 being white."
+      ],
+      "page": "2-16",
+      "document": "dataManual",
+      "readFrom": "Table 2-3 on page 2-17, file page 26, read from the page image because the text layer prints .SO for .80 and :93 for .93. The values are kept exactly as printed, including R-Y .4 for dark blue and the colour burst R-Y printed 47 and 73 without a decimal point, which levels.py reads as .47 and .73.",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    }
+  },
+  "notStated": {
+    "accessWindows": {
+      "value": "the positions in slots.py, from openMSX's MSX1 tables",
+      "verified": false,
+      "why": "The manual bounds how long an access waits and how often windows come, but never says which dot each window is on.",
+      "source": "openMSX src/video/VDPAccessSlots.cc at 99c28389d775b945c57be27df1def0925e28abd8, the MSX1 tables, which its comments say were measured on MSX1 hardware. No second independent source exists, because MAME does not model windows.",
+      "agreesWithTheManual": "Every bound the manual prints holds over the table: 16, 3 and 4 memory cycles between active-area windows, and no wait past 8 microseconds.",
+      "howToSettleIt": "A logic analyser on RAS, CAS and R/W of a running TMS9918A or TMS9928A, triggered on horizontal sync, with the processor writing continuously in each mode.",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "accessLead": {
+      "value": 16,
+      "verified": false,
+      "why": "The manual says about 2 microseconds after address setup, which is 21 master ticks, without placing it against the windows.",
+      "source": "openMSX VDP.cc, scheduleTMS99x8VramAccess, which records a measurement on a real MSX in Screen 2 with sprites: data writes 26 processor cycles apart or fewer corrupt video memory, and 27 or more never do. With openMSX's window positions only a lead of 8 TMS cycles, 16 master ticks or 1.49 microseconds, reproduces both halves. openMSX itself ships 7 cycles because Chase HQ corrupted at 8; see divergences.json.",
+      "howToSettleIt": "The same logic analyser capture, measuring from the rising edge of CSW to the next CAS that carries the data.",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "gridSwitch": {
+      "value": "from 636 master ticks into the second line before the first active one, which is openMSX's 162 cycles into the line before its display area, until 636 ticks into the last active line",
+      "verified": false,
+      "why": "The manual does not say when the window pattern changes between the border and the display.",
+      "source": "openMSX VDP.hh, isSlotTableDisplayEnabled, measured on the V99x8 and applied to the MSX1 tables by openMSX.",
+      "howToSettleIt": "The logic analyser capture across the first and last active lines.",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "secondRequest": {
+      "value": "replaces the first",
+      "verified": false,
+      "why": "The manual warns against accessing faster than the window allows but does not say what happens.",
+      "source": "openMSX describes a single request buffer; this package lets the later request take it.",
+      "howToSettleIt": "Two data writes closer together than a window, then the bytes at both addresses read back.",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "latchAndAddress": {
+      "value": "the first control byte goes straight into the address's low byte, any data access or status read clears the latch, and a register write also loads the address's high byte",
+      "verified": false,
+      "why": "The manual specifies the byte order of the two-byte writes, not what the register does between them.",
+      "source": "MAME tms9928a.cpp at dc00cf3517eef30587b33efbf1e1c63ad3531b58, register_write and the data and status paths.",
+      "howToSettleIt": "Write one control byte, then read data, then write one control byte and a register number, and read the address back through a data read.",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "readAheadOnWrite": {
+      "value": "a data write also loads the read buffer",
+      "verified": false,
+      "why": "Not stated.",
+      "source": "MAME vram_write.",
+      "howToSettleIt": "Write a byte, then read data without a new setup, and compare with the byte written.",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "registerNumber": {
+      "value": "the low three bits of the second byte",
+      "verified": false,
+      "why": "The manual says the four bits after the leading 1 must be 0, not what happens when they are not.",
+      "source": "MAME register_write, data & 7.",
+      "howToSettleIt": "Write register numbers 8 to 15 and see which registers change.",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "graphicsTwoMasks": {
+      "value": "the low bits of registers 3 and 4 act as AND masks on the name and third",
+      "verified": false,
+      "why": "The manual requires those bits to be 1 and does not say what other values do. With them all 1 the masks change nothing, which is the documented case.",
+      "source": "MAME update_table_masks.",
+      "howToSettleIt": "Graphics II with register 3 at 0x9F and register 4 at 0x00, then a frame captured and compared with the table contents.",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "undocumentedModes": {
+      "value": "text with multicolor and all three bits draw four dots on and two off; text with Graphics II reads the masked thirds; Graphics II with multicolor reads multicolor colours through the thirds",
+      "verified": false,
+      "why": "The mode table on page 2-5 lists four combinations of three bits.",
+      "source": "MAME update_line, modes 3, 5, 6 and 7. For Graphics II with multicolor MAME adds the row to the name before shifting, which this package does not follow; see divergences.json.",
+      "howToSettleIt": "Each combination set on hardware and a frame captured.",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "sizeOneName": {
+      "value": "the low two bits of the name are ignored",
+      "verified": false,
+      "why": "The manual says only that the address formation is slightly modified for SIZE 1 sprites.",
+      "quote": "The address formation is slightly modified for SIZE 1 sprites.",
+      "page": "2-26",
+      "document": "dataManual",
+      "source": "MAME update_line, sprcode & ~0x03.",
+      "howToSettleIt": "A size 1 sprite named 1 and one named 4 shown side by side.",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "fifthNumberWithoutFlag": {
+      "value": "the last plane examined, or 31 when the scan runs to the end",
+      "verified": false,
+      "why": "The manual says the number is valid whenever the flag is set, not what the bits hold otherwise.",
+      "source": "MAME update_line, m_FifthSprite.",
+      "howToSettleIt": "Status reads on frames with no fifth sprite and terminators at known planes.",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "spriteEvaluationTime": {
+      "value": "dot 256 of the line before",
+      "verified": false,
+      "why": "The manual does not say when sprites for a line are read.",
+      "source": "openMSX notes the sprite fetch for the first display line starts in the line before it; the dot is this package's choice.",
+      "howToSettleIt": "Change a sprite's position at known dots in the line before and capture which line shows it.",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "cellFetchTime": {
+      "value": "when the cell's first dot is shown",
+      "verified": false,
+      "why": "The manual does not place the name, pattern and colour reads.",
+      "source": "This package's choice; neither implementation models it.",
+      "howToSettleIt": "The logic analyser capture, reading which address follows each CAS.",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "frameFlagDot": {
+      "value": "the first dot after line 191",
+      "verified": false,
+      "why": "The manual places it at the end of the last active line, not on a dot.",
+      "source": "This package reads the manual's sentence literally. MAME sets it at the end of the following line; see divergences.json.",
+      "howToSettleIt": "INT captured against horizontal sync.",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "resetCounters": {
+      "value": "the first line of top blanking, dot 0",
+      "verified": false,
+      "why": "The manual says known states without naming them.",
+      "source": "MAME device_reset, which starts its line timer at the top of the blanking.",
+      "howToSettleIt": "Release RESET and time the first INT.",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "palBorders": {
+      "value": [51, 51],
+      "verified": false,
+      "why": "Figure 5-13 gives the TMS9929A 294 lines of border and display without dividing the border.",
+      "source": "MAME VERT_DISPLAY_START_PAL, 13 + 51.",
+      "howToSettleIt": "A TMS9929A frame captured with a distinct backdrop, counting lines above and below the display.",
+      "governs": ["tms9929a"]
+    },
+    "spritesWhenBlanked": {
+      "value": "no sprite processing and no flag changes",
+      "verified": false,
+      "why": "Not stated.",
+      "source": "MAME update_line, which skips sprites when the BLANK bit is clear.",
+      "howToSettleIt": "Five sprites on a line with the display blanked, then a status read.",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "ramSize": {
+      "value": "the 4/16K bit is held and changes no address",
+      "verified": false,
+      "why": "The manual describes how the two RAM types are wired, not how a 16K RAM behaves with the bit clear.",
+      "source": "MAME lists it as unmodelled.",
+      "howToSettleIt": "A 16K board run with the bit clear, reading back a pattern written across the whole RAM.",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    },
+    "statusFifthNumberOnRead": {
+      "value": "kept",
+      "verified": false,
+      "why": "The manual says a status read clears F, C and 5S, not the number.",
+      "source": "MAME register_read, which leaves the number in place.",
+      "howToSettleIt": "Two status reads after a fifth sprite.",
+      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+    }
+  }
+}

@@ -1,0 +1,192 @@
+{
+  "note": "Every place two sources part, or one source parts with itself, and which way this package went. The manual is the only manufacturer document, so most entries are the manual disagreeing with itself or an implementation disagreeing with the manual.",
+  "authority": {
+    "order": [
+      "the data manual, read from the page image where its text layer and image differ",
+      "openMSX for window positions",
+      "MAME for what neither covers"
+    ],
+    "why": "A manufacturer's sentence outranks an implementation, and where the manual contradicts itself the reading that agrees with its own numbers elsewhere wins."
+  },
+  "readOn": "2026-10-16",
+  "divergences": [
+    {
+      "id": "coincidence-off-screen",
+      "severity": "contradiction",
+      "status": "open",
+      "topic": "Whether sprite dots outside the active area set the coincidence flag.",
+      "documentSays": {
+        "rung": 1,
+        "claim": "Page 2-11 says sprites partly or wholly off the screen are considered. Page 2-16 says only sprites active on the display set the flag.",
+        "quotes": [
+          "Transparent colored sprites, as well as those that are partially or completely off the screen, are also considered.",
+          "Only those sprites that are active on the display will cause the coincidence flag to set."
+        ],
+        "source": "TMS9918A/TMS9928A/TMS9929A Data Manual, pages 2-11 and 2-16"
+      },
+      "thisPackageDid": {
+        "claim": "Counts coincidence only on the 256 active dots.",
+        "why": "Page 2-11 also says the check happens during the generation of the pixel, and no pixel is generated off the screen. MAME counts the same way."
+      },
+      "packageFollows": "document",
+      "wouldCloseIt": "Two sprites overlapping only in the dots past the right edge of the active area on hardware, and a status read."
+    },
+    {
+      "id": "active-plus-border-time",
+      "severity": "low",
+      "status": "closed",
+      "topic": "How long the TMS9918A's active and border area lasts.",
+      "documentSays": {
+        "rung": 1,
+        "claim": "Section 5.5 gives 18.8 ms, while Table 3-3 gives 243 lines of border and display, which is 15.48 ms at 63.695 microseconds a line.",
+        "quotes": [
+          "Vertical back blanking 828",
+          "Table 3-3 gives the relative count values of the screen display parameters."
+        ],
+        "source": "TMS9918A/TMS9928A/TMS9929A Data Manual, pages 3-8 and 5-7"
+      },
+      "thisPackageDid": {
+        "claim": "Follows Table 3-3.",
+        "why": "18.8 ms is 295 lines, which is the TMS9929A's figure carried into the TMS9918A table. The TMS9929A table's 18.70 ms matches its own 294 lines, and every other NTSC figure in Section 5.5 matches Table 3-3."
+      },
+      "packageFollows": "document",
+      "wouldReopenIt": "A TMS9918A frame measured with more than 243 lines of border and display."
+    },
+    {
+      "id": "gromclk-frequency",
+      "severity": "low",
+      "status": "closed",
+      "topic": "The GROMCLK frequency.",
+      "documentSays": {
+        "rung": 1,
+        "claim": "Page 3-8 prints 3.58 MHz for a clock it also calls the master divided by 24. Section 5.5 prints 447.5 kHz, which is that division.",
+        "quote": "The GROMCLK is developed from the master clock frequency divided by 24 (3.58 MHz for TMS9928A only).",
+        "source": "TMS9918A/TMS9928A/TMS9929A Data Manual, pages 3-8 and 5-5"
+      },
+      "thisPackageDid": {
+        "claim": "Divides by 24 and brings the pin out on the TMS9918A only.",
+        "why": "The divisor is printed twice and the frequency follows from it. The parenthesis names the wrong part as well, because the colour-difference parts use that pin for a colour output."
+      },
+      "packageFollows": "document",
+      "wouldReopenIt": "Nothing short of a TMS9928A with a GROMCLK pin."
+    },
+    {
+      "id": "ntsc-parts-named",
+      "severity": "low",
+      "status": "closed",
+      "topic": "Which parts run 262 lines.",
+      "documentSays": {
+        "rung": 1,
+        "claim": "Page 3-8 says the TMS9918A/9929A operates at 262 lines, then gives the TMS9929A 313 in the next sentence.",
+        "quote": "operates at 262 lines per frame and approximately 60 frames per second in a noninterlaced mode of operation.",
+        "source": "TMS9918A/TMS9928A/TMS9929A Data Manual, page 3-8"
+      },
+      "thisPackageDid": {
+        "claim": "Gives 262 lines to the TMS9918A and TMS9928A and 313 to the TMS9929A.",
+        "why": "Section 2.1.6 names the TMS9918A and TMS9928A as the 1/60 second parts and the TMS9929A as the 1/50 one."
+      },
+      "packageFollows": "document",
+      "wouldReopenIt": "Nothing; the sentence contradicts its neighbour on the same page."
+    },
+    {
+      "id": "reset-registers",
+      "severity": "medium",
+      "status": "closed",
+      "topic": "Which registers a reset clears.",
+      "documentSays": {
+        "rung": 1,
+        "claim": "Registers 0 and 1.",
+        "quote": "sets the horizontal and vertical counters to known states, and clears VDP registers 0 and 1.",
+        "source": "TMS9918A/TMS9928A/TMS9929A Data Manual, page 2-5"
+      },
+      "referenceSays": {
+        "rung": 5,
+        "claim": "MAME's device_reset clears all eight, the address, the latch and the read buffer."
+      },
+      "thisPackageDid": {
+        "claim": "Clears registers 0 and 1 and the three flags, and leaves everything else holding what it held.",
+        "why": "The manual names what reset defines, and nothing below it overrules it."
+      },
+      "packageFollows": "document",
+      "wouldReopenIt": "A reset on hardware that changes register 2 to 7."
+    },
+    {
+      "id": "frame-flag-line",
+      "severity": "medium",
+      "status": "open",
+      "topic": "On which line the frame flag rises.",
+      "documentSays": {
+        "rung": 1,
+        "claim": "At the end of the raster scan of the last active line.",
+        "quote": "The F status flag in the status register is set to 1 at the end of the raster scan of the last line of the active display.",
+        "source": "TMS9918A/TMS9928A/TMS9929A Data Manual, page 2-11"
+      },
+      "referenceSays": {
+        "rung": 5,
+        "claim": "MAME sets it at the last cycle of the first inactive line, one line later."
+      },
+      "thisPackageDid": {
+        "claim": "Sets it as line 192 begins, the dot after line 191 ends.",
+        "why": "That is the literal reading of the sentence, and MAME's choice is line-level emulation rather than a measurement."
+      },
+      "packageFollows": "document",
+      "wouldCloseIt": "INT captured against horizontal sync on hardware."
+    },
+    {
+      "id": "graphics2-multicolor-address",
+      "severity": "unstated",
+      "status": "open",
+      "topic": "Where Graphics II with the multicolor bit reads its colours.",
+      "referenceSays": {
+        "rung": 5,
+        "claim": "MAME adds the row within the name to the name before shifting it into an address."
+      },
+      "thisPackageDid": {
+        "claim": "Reads the multicolor byte for the row from the masked Graphics II name, the way multicolor reads it from a plain name.",
+        "why": "MAME's expression puts the row eight bytes apart rather than one, which no documented mode does. Neither choice is measured, and the census says whether any software reaches the mode."
+      },
+      "packageFollows": "neither",
+      "wouldCloseIt": "The mode set on hardware and a frame captured."
+    },
+    {
+      "id": "burst-decimal-points",
+      "severity": "low",
+      "status": "acknowledged",
+      "topic": "The colour burst R-Y level on the colour-difference parts.",
+      "documentSays": {
+        "rung": 1,
+        "claim": "Table 2-3 prints 47(28A) and 73(29A) with no decimal point, beside .1(28A) and .2(29A) for B-Y.",
+        "quote": "The VDP can display the 15 colors shown in Table 2-3.",
+        "source": "TMS9918A/TMS9928A/TMS9929A Data Manual, page 2-17, read from the page image"
+      },
+      "thisPackageDid": {
+        "claim": "Reads them as .47 and .73.",
+        "why": "Every other entry in the column is a fraction of the white-black swing, and .47 is the column's no-colour level."
+      },
+      "packageFollows": "document",
+      "wouldCloseIt": "Another printing of the manual, or the burst measured on a TMS9928A."
+    },
+    {
+      "id": "access-lead",
+      "severity": "medium",
+      "status": "open",
+      "topic": "How long after a port access the first usable window is.",
+      "documentSays": {
+        "rung": 1,
+        "claim": "About 2 microseconds after address setup, without saying when inside a window.",
+        "quote": "The VDP requires approximately 8 microseconds to fetch the VRAM byte following the last data transfer and 2 microseconds following address setup.",
+        "source": "TMS9918A/TMS9928A/TMS9929A Data Manual, page 2-4"
+      },
+      "referenceSays": {
+        "rung": 5,
+        "claim": "openMSX records a hardware measurement that 26 cycles apart corrupts and 27 does not, which its window positions reproduce only at 8 TMS cycles. It ships 7, because Chase HQ corrupted at 8."
+      },
+      "thisPackageDid": {
+        "claim": "Uses 16 master ticks, which is 8 TMS cycles.",
+        "why": "A measurement on hardware outranks one game's picture in an emulator. tms9918/slots.test.py holds both halves of the measured threshold."
+      },
+      "packageFollows": "recording",
+      "wouldCloseIt": "The logic analyser capture of CSW against CAS."
+    }
+  ]
+}

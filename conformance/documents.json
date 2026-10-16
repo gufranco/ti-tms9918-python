@@ -1,0 +1,27 @@
+{
+  "note": "Every document this package is held to, by identity rather than by name. conformance/documents.py brings each one down again and refuses anything whose digest does not match.",
+  "authority": {
+    "1": "A manufacturer document. What the maker of the hardware printed about it.",
+    "2": "A recording taken off real hardware. Nothing here occupies that rung.",
+    "3": "Independent research, for what no manufacturer printed."
+  },
+  "whyNotCarriedHere": "This is Texas Instruments' document, not this project's, and this repository is public. What is carried is the identity, which is what makes a copy checkable.",
+  "readOn": "2026-10-16",
+  "partsWithNoDocument": {},
+  "documents": [
+    {
+      "file": "manufacturer/TMS9918A_TMS9928A_TMS9929A_Video_Display_Processors_Data_Manual_Nov82.pdf",
+      "rung": 1,
+      "publisher": "Texas Instruments",
+      "title": "TMS9918A/TMS9928A/TMS9929A Video Display Processors Data Manual",
+      "date": "November 1982",
+      "retrievedFrom": "https://bitsavers.org/components/ti/TMS9900/TMS9918A_TMS9928A_TMS9929A_Video_Display_Processors_Data_Manual_Nov82.pdf",
+      "covers": ["tms9918a", "tms9928a", "tms9929a"],
+      "settles": "The port protocol, the registers and status, the four display modes, the sprite rules, the line and frame timing of all three parts, the clock dividers, the colour levels, and the bounds on how long the processor waits for video memory.",
+      "sha256": "3991f0c691b83036bbb96d8e60e8d4ed4cfbb5eed9567ad61737570771113450",
+      "bytes": 6785534,
+      "pages": 105,
+      "provenance": "A scan of the printed manual with a text layer from an OCR pass, which garbles tables and some figures. Every quote in hardware.json matches that layer once both are flattened to letters and digits, and every table this package uses was also read from the page image."
+    }
+  ]
+}
