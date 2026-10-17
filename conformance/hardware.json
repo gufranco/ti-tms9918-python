@@ -162,7 +162,7 @@
       "governs": ["tms9918a", "tms9928a", "tms9929a"],
       "heldBy": [
         "conformance/hardware.test.py::PortTest.test_the_flags_and_enables_sit_where_the_manual_puts_them",
-        "conformance/hardware.test.py::PrintedDisplayTest.test_blanking_shows_the_border_colour_where_a_pattern_would_be"
+        "conformance/display.test.py::ColourTest.test_blanking_shows_the_border_colour_where_a_pattern_would_be"
       ]
     },
     "tableBases": {
@@ -182,7 +182,11 @@
       ],
       "page": "2-7",
       "document": "dataManual",
-      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+      "governs": ["tms9918a", "tms9928a", "tms9929a"],
+      "heldBy": [
+        "conformance/display.test.py::TableTest.test_each_base_register_scales_by_the_factor_printed",
+        "conformance/display.test.py::TableTest.test_the_sprite_tables_scale_by_the_factors_printed"
+      ]
     },
     "register7": {
       "value": {
@@ -195,7 +199,10 @@
       ],
       "page": "2-7",
       "document": "dataManual",
-      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+      "governs": ["tms9918a", "tms9928a", "tms9929a"],
+      "heldBy": [
+        "conformance/display.test.py::ColourTest.test_register_7_gives_text_its_two_colours_and_every_mode_its_backdrop"
+      ]
     },
     "frameFlag": {
       "value": "set when the last active line ends",
@@ -204,7 +211,7 @@
       "document": "dataManual",
       "governs": ["tms9918a", "tms9928a", "tms9929a"],
       "heldBy": [
-        "conformance/hardware.test.py::PrintedDisplayTest.test_the_frame_flag_rises_as_the_last_active_line_ends"
+        "conformance/hardware.test.py::PrintedPortTest.test_the_frame_flag_rises_as_the_last_active_line_ends"
       ]
     },
     "frameFlagCleared": {
@@ -214,7 +221,7 @@
       "document": "dataManual",
       "governs": ["tms9918a", "tms9928a", "tms9929a"],
       "heldBy": [
-        "conformance/hardware.test.py::PrintedDisplayTest.test_a_status_read_and_a_reset_each_clear_the_frame_flag"
+        "conformance/hardware.test.py::PrintedPortTest.test_a_status_read_and_a_reset_each_clear_the_frame_flag"
       ]
     },
     "coincidence": {
@@ -226,7 +233,12 @@
       ],
       "page": "2-11",
       "document": "dataManual",
-      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+      "governs": ["tms9918a", "tms9928a", "tms9929a"],
+      "heldBy": [
+        "conformance/hardware.test.py::PortTest.test_the_flags_and_enables_sit_where_the_manual_puts_them",
+        "conformance/display.test.py::SpriteTest.test_two_sprites_meeting_set_the_flag_a_status_read_clears",
+        "conformance/display.test.py::SpriteTest.test_a_reset_clears_the_coincidence_flag"
+      ]
     },
     "fifthSpriteNoInterrupt": {
       "value": true,
@@ -235,7 +247,7 @@
       "document": "dataManual",
       "governs": ["tms9918a", "tms9928a", "tms9929a"],
       "heldBy": [
-        "conformance/hardware.test.py::PrintedSpriteTest.test_a_fifth_sprite_sets_its_flag_without_an_interrupt"
+        "conformance/display.test.py::SpriteTest.test_a_fifth_sprite_sets_its_flag_without_an_interrupt"
       ]
     },
     "fourPerLine": {
@@ -246,7 +258,11 @@
       ],
       "page": "2-16",
       "document": "dataManual",
-      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+      "governs": ["tms9918a", "tms9928a", "tms9929a"],
+      "heldBy": [
+        "conformance/display.test.py::SpriteTest.test_the_sprite_constants_are_the_ones_printed",
+        "conformance/display.test.py::SpriteTest.test_only_the_printed_number_of_sprites_show_on_a_line"
+      ]
     },
     "planePriority": {
       "value": "plane 0 in front",
@@ -254,9 +270,7 @@
       "page": "2-16",
       "document": "dataManual",
       "governs": ["tms9918a", "tms9928a", "tms9929a"],
-      "heldBy": [
-        "conformance/hardware.test.py::PrintedSpriteTest.test_plane_0_shows_in_front_of_plane_1"
-      ]
+      "heldBy": ["conformance/display.test.py::SpriteTest.test_plane_0_shows_in_front_of_plane_1"]
     },
     "transparentBackdrop": {
       "value": "black, or external video when it is selected",
@@ -265,7 +279,7 @@
       "document": "dataManual",
       "governs": ["tms9918a", "tms9928a", "tms9929a"],
       "heldBy": [
-        "conformance/hardware.test.py::PrintedDisplayTest.test_a_transparent_backdrop_is_black_or_the_external_video"
+        "conformance/display.test.py::ColourTest.test_a_transparent_backdrop_is_black_or_the_external_video"
       ]
     },
     "noSpritesInText": {
@@ -274,7 +288,7 @@
       "page": "2-16",
       "document": "dataManual",
       "governs": ["tms9918a", "tms9928a", "tms9929a"],
-      "heldBy": ["conformance/hardware.test.py::PrintedSpriteTest.test_text_mode_draws_no_sprite"]
+      "heldBy": ["conformance/display.test.py::SpriteTest.test_text_mode_draws_no_sprite"]
     },
     "graphicsOne": {
       "value": [0, 0, 0],
@@ -283,7 +297,7 @@
       "document": "dataManual",
       "governs": ["tms9918a", "tms9928a", "tms9929a"],
       "heldBy": [
-        "conformance/hardware.test.py::TableTest.test_the_mode_bits_select_the_modes_printed"
+        "conformance/display.test.py::TableTest.test_the_mode_bits_select_the_modes_printed"
       ]
     },
     "graphicsTwo": {
@@ -295,7 +309,11 @@
       ],
       "page": "2-19",
       "document": "dataManual",
-      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+      "governs": ["tms9918a", "tms9928a", "tms9929a"],
+      "heldBy": [
+        "conformance/display.test.py::TableTest.test_the_mode_bits_select_the_modes_printed",
+        "conformance/display.test.py::TableTest.test_graphics_two_reads_a_third_of_256_patterns_from_the_half_register_4_names"
+      ]
     },
     "multicolor": {
       "value": {
@@ -308,7 +326,10 @@
       ],
       "page": "2-21",
       "document": "dataManual",
-      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+      "governs": ["tms9918a", "tms9928a", "tms9929a"],
+      "heldBy": [
+        "conformance/display.test.py::TableTest.test_the_second_row_of_multicolor_names_reads_bytes_three_and_four"
+      ]
     },
     "text": {
       "value": {
@@ -322,7 +343,11 @@
       ],
       "page": "2-23",
       "document": "dataManual",
-      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+      "governs": ["tms9918a", "tms9928a", "tms9929a"],
+      "heldBy": [
+        "conformance/display.test.py::TableTest.test_text_has_the_grid_the_manual_prints",
+        "conformance/display.test.py::TableTest.test_a_text_cell_drops_the_two_low_bits_and_a_row_holds_the_printed_columns"
+      ]
     },
     "spriteTop": {
       "value": -1,
@@ -331,7 +356,7 @@
       "document": "dataManual",
       "governs": ["tms9918a", "tms9928a", "tms9929a"],
       "heldBy": [
-        "conformance/hardware.test.py::SpriteTest.test_a_position_of_minus_one_reaches_the_top_line"
+        "conformance/display.test.py::SpriteTest.test_a_position_of_minus_one_reaches_the_top_line"
       ]
     },
     "earlyClock": {
@@ -342,7 +367,11 @@
       ],
       "page": "2-26",
       "document": "dataManual",
-      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+      "governs": ["tms9918a", "tms9928a", "tms9929a"],
+      "heldBy": [
+        "conformance/display.test.py::SpriteTest.test_the_sprite_constants_are_the_ones_printed",
+        "conformance/display.test.py::SpriteTest.test_the_early_clock_bit_moves_a_sprite_left_by_the_printed_dots"
+      ]
     },
     "terminator": {
       "value": 208,
@@ -351,8 +380,8 @@
       "document": "dataManual",
       "governs": ["tms9918a", "tms9928a", "tms9929a"],
       "heldBy": [
-        "conformance/hardware.test.py::SpriteTest.test_the_sprite_constants_are_the_ones_printed",
-        "conformance/hardware.test.py::PrintedSpriteTest.test_no_plane_after_the_terminator_is_shown"
+        "conformance/display.test.py::SpriteTest.test_the_sprite_constants_are_the_ones_printed",
+        "conformance/display.test.py::SpriteTest.test_no_plane_after_the_terminator_is_shown"
       ]
     },
     "magnification": {
@@ -362,7 +391,7 @@
       "document": "dataManual",
       "governs": ["tms9918a", "tms9928a", "tms9929a"],
       "heldBy": [
-        "conformance/hardware.test.py::PrintedSpriteTest.test_a_magnified_bit_covers_the_printed_square_of_dots"
+        "conformance/display.test.py::SpriteTest.test_a_magnified_bit_covers_the_printed_square_of_dots"
       ]
     },
     "dividers": {
@@ -378,7 +407,11 @@
       ],
       "page": "3-8",
       "document": "dataManual",
-      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+      "governs": ["tms9918a", "tms9928a", "tms9929a"],
+      "heldBy": [
+        "conformance/hardware.test.py::TimingTest.test_the_dividers_and_the_parts_with_clock_pins_are_the_ones_printed",
+        "conformance/hardware.test.py::TimingTest.test_each_part_divides_the_master_clock_as_printed"
+      ]
     },
     "lineTable": {
       "value": {
@@ -405,7 +438,11 @@
       ],
       "page": "3-8",
       "document": "dataManual",
-      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+      "governs": ["tms9918a", "tms9928a", "tms9929a"],
+      "heldBy": [
+        "conformance/hardware.test.py::TimingTest.test_each_part_runs_the_lines_printed",
+        "conformance/hardware.test.py::TimingTest.test_each_part_raises_the_frame_flag_once_per_printed_number_of_lines"
+      ]
     },
     "externalVideo": {
       "value": 1,
@@ -415,7 +452,7 @@
       "governs": ["tms9918a", "tms9928a", "tms9929a"],
       "heldBy": [
         "conformance/hardware.test.py::PortTest.test_the_flags_and_enables_sit_where_the_manual_puts_them",
-        "conformance/hardware.test.py::PrintedDisplayTest.test_a_transparent_backdrop_is_black_or_the_external_video"
+        "conformance/display.test.py::ColourTest.test_a_transparent_backdrop_is_black_or_the_external_video"
       ]
     },
     "memoryCycle": {
@@ -437,7 +474,10 @@
       "page": "2-16",
       "document": "dataManual",
       "readFrom": "Table 2-3 on page 2-17, file page 26, read from the page image because the text layer prints .SO for .80 and :93 for .93. The values are kept exactly as printed, including R-Y .4 for dark blue and the colour burst R-Y printed 47 and 73 without a decimal point, which levels.py reads as .47 and .73.",
-      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+      "governs": ["tms9918a", "tms9928a", "tms9929a"],
+      "heldBy": [
+        "conformance/display.test.py::ColourTest.test_the_tables_carry_the_printed_number_of_colours_from_black_to_white"
+      ]
     }
   },
   "notStated": {

@@ -45,7 +45,8 @@ errors.
 
 Three more things run, and none is optional.
 
-`conformance/hardware.test.py` holds this package's constants to the record. A
+`conformance/hardware.test.py` and `conformance/display.test.py` hold this
+package's behaviour to the record, each test through the fact it names. A
 citation in the documentation is therefore a check that can fail rather than a
 claim in prose. It needs nothing outside the repository and runs in CI.
 

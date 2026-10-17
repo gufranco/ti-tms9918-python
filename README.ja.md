@@ -8,7 +8,7 @@ Texas InstrumentsのTMS9918A、TMS9928A、TMS9929Aビデオディスプレイプ
 [![Release](https://img.shields.io/github/v/release/gufranco/ti-tms9918-python)](https://github.com/gufranco/ti-tms9918-python/releases)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-異なるSG-1000イメージ**348**本をそれぞれ**600**フレーム起動、市販の**203**本で性質の不合格**0**件、マニュアル内で所在を確認した引用**64**件、**3**品種、テスト**681**件、ステートメントとブランチのカバレッジ**100%**、依存関係なし
+異なるSG-1000イメージ**348**本をそれぞれ**600**フレーム起動、市販の**203**本で性質の不合格**0**件、マニュアル内で所在を確認した引用**64**件、**3**品種、テスト**699**件、ステートメントとブランチのカバレッジ**100%**、依存関係なし
 
 ```python
 import tms9918
@@ -282,7 +282,7 @@ python3 -m conformance.census /path/to/sg1000/library --frames 600 --jobs 10
 
 ## 正しいかどうか
 
-TIが記載した事実のうち、テストで到達できるものはすべてコードと照合しています。[`conformance/hardware.json`](conformance/hardware.json)は各事実をその文とページとともに保持し、[`conformance/hardware.test.py`](conformance/hardware.test.py)がそれらをパッケージ内の定数と比較します。`python3 -m conformance.quotes`は、引用した文のすべてをマニュアル内で見つけます。
+TIが記載した事実のうち、テストで到達できるものはすべてコードと照合しています。[`conformance/hardware.json`](conformance/hardware.json)は各事実をその文とページとともに保持し、[`conformance/hardware.test.py`](conformance/hardware.test.py)と[`conformance/display.test.py`](conformance/display.test.py)がそれらに照らしてパーツを動かします。`python3 -m conformance.quotes`は、引用した文のすべてをマニュアル内で見つけます。
 
 マニュアルに記載のない値はすべて、同じファイルの`notStated`の下に未検証として置かれ、その出典と、決着をつけるための測定が添えられています。[OPEN-QUESTIONS.md](OPEN-QUESTIONS.md)にその一覧があります。マニュアルが自己矛盾している箇所は[`conformance/divergences.json`](conformance/divergences.json)にあります。
 

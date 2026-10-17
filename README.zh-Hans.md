@@ -8,7 +8,7 @@
 [![Release](https://img.shields.io/github/v/release/gufranco/ti-tms9918-python)](https://github.com/gufranco/ti-tms9918-python/releases)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-**348** 个不同的 SG-1000 镜像各启动 **600** 帧，**0** 个属性失败（涵盖其中 **203** 个零售版镜像），在手册中定位到 **64** 处引文，**3** 款芯片，**681** 个测试，**100%** 语句和分支覆盖率，无依赖
+**348** 个不同的 SG-1000 镜像各启动 **600** 帧，**0** 个属性失败（涵盖其中 **203** 个零售版镜像），在手册中定位到 **64** 处引文，**3** 款芯片，**699** 个测试，**100%** 语句和分支覆盖率，无依赖
 
 ```python
 import tms9918
@@ -282,7 +282,7 @@ python3 -m conformance.census /path/to/sg1000/library --frames 600 --jobs 10
 
 ## 是否正确
 
-TI 列出的、测试能够触及的每一项事实都与代码对照。[`conformance/hardware.json`](conformance/hardware.json) 记录每项事实及其原句和页码，[`conformance/hardware.test.py`](conformance/hardware.test.py) 将它们与包中的常量进行比较。`python3 -m conformance.quotes` 在手册中找出每一句引文。
+TI 列出的、测试能够触及的每一项事实都与代码对照。[`conformance/hardware.json`](conformance/hardware.json) 记录每项事实及其原句和页码，[`conformance/hardware.test.py`](conformance/hardware.test.py) 和 [`conformance/display.test.py`](conformance/display.test.py) 依据它们驱动芯片模型。`python3 -m conformance.quotes` 在手册中找出每一句引文。
 
 手册未列出的每个值都放在同一文件的 `notStated` 下，标记为未验证，并附有其来源以及能够确定它的测量。[OPEN-QUESTIONS.md](OPEN-QUESTIONS.md) 列出了这些值。手册自相矛盾之处记录在 [`conformance/divergences.json`](conformance/divergences.json) 中。
 

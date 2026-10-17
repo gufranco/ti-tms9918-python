@@ -54,8 +54,12 @@ place two sources part, including the places the manual contradicts itself.
 ## What is settled and what is not
 
 **Settled: everything the manual prints and a test can reach.** Each fact in
-[`conformance/hardware.json`](conformance/hardware.json) is held to the code by
-[`conformance/hardware.test.py`](conformance/hardware.test.py).
+[`conformance/hardware.json`](conformance/hardware.json) names, under `heldBy`,
+the tests that hold it:
+[`conformance/hardware.test.py`](conformance/hardware.test.py) for the ports,
+status and timing, and
+[`conformance/display.test.py`](conformance/display.test.py) for the tables,
+colours and sprites.
 
 **Settled: every bound the manual prints on access time holds over the window
 table.** [`tms9918/slots.test.py`](tms9918/slots.test.py) checks it.
@@ -172,6 +176,7 @@ tms9918/
 conformance/
   census.py         boots every SG-1000 image in a library you own and counts what it reaches
   harness.py        the SG-1000 board the census boots it on
+  bench.py          the record and a reset part, shared by the record's tests
   cartridges.py     where each cartridge board puts its own RAM
   boards.json       which images carry RAM, by whole-file SHA-1, from MAME's software list
   corpus.json       those counts, holding nothing from any cartridge

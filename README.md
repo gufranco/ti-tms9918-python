@@ -8,7 +8,7 @@ English | [日本語](README.ja.md) | [简体中文](README.zh-Hans.md) | [繁�
 [![Release](https://img.shields.io/github/v/release/gufranco/ti-tms9918-python)](https://github.com/gufranco/ti-tms9918-python/releases)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-**348** distinct SG-1000 images booted for **600** frames each, **0** property failures over the **203** retail ones, **64** quotes located in the manual, **3** parts, **681** tests, **100%** statement and branch coverage, no dependencies
+**348** distinct SG-1000 images booted for **600** frames each, **0** property failures over the **203** retail ones, **64** quotes located in the manual, **3** parts, **699** tests, **100%** statement and branch coverage, no dependencies
 
 ```python
 import tms9918
@@ -282,7 +282,7 @@ Two properties gate the run: the model raises no exception on any image, and eve
 
 ## Is it right
 
-Every fact TI printed that a test can reach is held to the code. [`conformance/hardware.json`](conformance/hardware.json) carries each fact with its sentence and page, and [`conformance/hardware.test.py`](conformance/hardware.test.py) compares them with the constants in the package. `python3 -m conformance.quotes` finds every quoted sentence in the manual.
+Every fact TI printed that a test can reach is held to the code. [`conformance/hardware.json`](conformance/hardware.json) carries each fact with its sentence and page, and [`conformance/hardware.test.py`](conformance/hardware.test.py) and [`conformance/display.test.py`](conformance/display.test.py) drive the part against them. `python3 -m conformance.quotes` finds every quoted sentence in the manual.
 
 Every value the manual does not print sits under `notStated` in the same file, marked unverified, with its source and the measurement that would settle it. [OPEN-QUESTIONS.md](OPEN-QUESTIONS.md) lists them. The places where the manual contradicts itself are in [`conformance/divergences.json`](conformance/divergences.json).
 
