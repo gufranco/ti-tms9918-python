@@ -40,21 +40,32 @@
       "quote": "The CPU transfers data to the VRAM through the VDP using a 14-bit autoincrementing address register.",
       "page": "2-3",
       "document": "dataManual",
-      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+      "governs": ["tms9918a", "tms9928a", "tms9929a"],
+      "heldBy": [
+        "conformance/hardware.test.py::PortTest.test_the_address_register_is_fourteen_bits",
+        "conformance/hardware.test.py::PrintedPortTest.test_the_address_autoincrements_and_wraps_at_the_printed_width"
+      ]
     },
     "writeSetup": {
       "value": 64,
       "quote": "During setup of the address register, the two MSBs of the second address byte must be 0 and 1 respectively.",
       "page": "2-3",
       "document": "dataManual",
-      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+      "governs": ["tms9918a", "tms9928a", "tms9929a"],
+      "heldBy": [
+        "conformance/hardware.test.py::PortTest.test_the_write_setup_bit_is_the_one_the_manual_names",
+        "conformance/hardware.test.py::PrintedPortTest.test_only_a_setup_without_the_printed_write_bits_asks_for_a_read"
+      ]
     },
     "readSetupPrefetch": {
       "value": true,
       "quote": "By setting up the address this way, a read cycle to VRAM is initiated and read data will be available for the first data transfer to the CPU.",
       "page": "2-4",
       "document": "dataManual",
-      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+      "governs": ["tms9918a", "tms9928a", "tms9929a"],
+      "heldBy": [
+        "conformance/hardware.test.py::PrintedPortTest.test_a_read_setup_leaves_the_named_byte_ready_for_the_first_read"
+      ]
     },
     "accessTime": {
       "value": {
@@ -64,42 +75,62 @@
       "quote": "The VDP requires approximately 8 microseconds to fetch the VRAM byte following the last data transfer and 2 microseconds following address setup.",
       "page": "2-4",
       "document": "dataManual",
-      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+      "governs": ["tms9918a", "tms9928a", "tms9929a"],
+      "heldBy": [
+        "conformance/hardware.test.py::PrintedAccessTest.test_no_data_access_waits_past_the_printed_time_in_any_mode",
+        "conformance/hardware.test.py::PrintedAccessTest.test_a_setup_with_the_display_blanked_is_served_in_the_printed_time"
+      ]
     },
     "graphicsWindows": {
       "value": 16,
       "quote": "During the active display, CPU windows occur once every 16 memory cycles giving a maximum delay of 6 microseconds (a memory cycle takes about 372 nanoseconds).",
       "page": "2-4",
       "document": "dataManual",
-      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+      "governs": ["tms9918a", "tms9928a", "tms9929a"],
+      "heldBy": [
+        "conformance/hardware.test.py::TimingTest.test_the_windows_come_as_often_as_printed_in_each_mode",
+        "conformance/hardware.test.py::PrintedAccessTest.test_sixteen_printed_memory_cycles_span_the_gap_between_graphics_windows"
+      ]
     },
     "textWindows": {
       "value": 3,
       "quote": "In the Text mode the CPU windows occur at least once out of every three memory cycles or a worst case delay of about 1.1 microseconds.",
       "page": "2-4",
       "document": "dataManual",
-      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+      "governs": ["tms9918a", "tms9928a", "tms9929a"],
+      "heldBy": [
+        "conformance/hardware.test.py::TimingTest.test_the_windows_come_as_often_as_printed_in_each_mode"
+      ]
     },
     "multicolorWindows": {
       "value": 4,
       "quote": "Finally, in the Multicolor mode, CPU windows occur at least once out of every four memory cycles.",
       "page": "2-4",
       "document": "dataManual",
-      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+      "governs": ["tms9918a", "tms9928a", "tms9929a"],
+      "heldBy": [
+        "conformance/hardware.test.py::TimingTest.test_the_windows_come_as_often_as_printed_in_each_mode"
+      ]
     },
     "blankedAccess": {
       "value": "no wait for a window",
       "quote": "With this bit low, the entire screen will show only border color and the VDP does not have to wait for a CPU access window at any time.",
       "page": "2-4",
       "document": "dataManual",
-      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+      "governs": ["tms9918a", "tms9928a", "tms9929a"],
+      "heldBy": [
+        "conformance/hardware.test.py::PrintedAccessTest.test_a_blanked_access_waits_as_in_the_border_whatever_the_mode"
+      ]
     },
     "interruptCleared": {
       "value": "reading the status",
       "quote": "Interrupts are cleared when the status register is read.",
       "page": "2-5",
       "document": "dataManual",
-      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+      "governs": ["tms9918a", "tms9928a", "tms9929a"],
+      "heldBy": [
+        "conformance/hardware.test.py::PrintedPortTest.test_reading_the_status_clears_the_interrupt"
+      ]
     },
     "reset": {
       "value": {
@@ -109,21 +140,30 @@
       "quote": "sets the horizontal and vertical counters to known states, and clears VDP registers 0 and 1.",
       "page": "2-5",
       "document": "dataManual",
-      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+      "governs": ["tms9918a", "tms9928a", "tms9929a"],
+      "heldBy": [
+        "conformance/hardware.test.py::PortTest.test_reset_clears_exactly_the_registers_the_manual_names",
+        "conformance/hardware.test.py::PrintedPortTest.test_reset_sets_the_counters_to_one_known_state_whatever_they_held"
+      ]
     },
     "refreshWhileBlanked": {
       "value": true,
       "quote": "The VDP, however, continues to refresh the VRAM even though the display is blanked.",
       "page": "2-5",
       "document": "dataManual",
-      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+      "governs": ["tms9918a", "tms9928a", "tms9929a"],
+      "unreachable": "The model's video memory keeps every byte with no refresh, so it has no refresh cycle a test could watch continue or stop."
     },
     "blank": {
       "value": 64,
       "quote": "Blanking causes the display to show border color only",
       "page": "2-5",
       "document": "dataManual",
-      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+      "governs": ["tms9918a", "tms9928a", "tms9929a"],
+      "heldBy": [
+        "conformance/hardware.test.py::PortTest.test_the_flags_and_enables_sit_where_the_manual_puts_them",
+        "conformance/hardware.test.py::PrintedDisplayTest.test_blanking_shows_the_border_colour_where_a_pattern_would_be"
+      ]
     },
     "tableBases": {
       "value": {
@@ -162,14 +202,20 @@
       "quote": "The F status flag in the status register is set to 1 at the end of the raster scan of the last line of the active display.",
       "page": "2-11",
       "document": "dataManual",
-      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+      "governs": ["tms9918a", "tms9928a", "tms9929a"],
+      "heldBy": [
+        "conformance/hardware.test.py::PrintedDisplayTest.test_the_frame_flag_rises_as_the_last_active_line_ends"
+      ]
     },
     "frameFlagCleared": {
       "value": "by a status read or a reset",
       "quote": "It is reset to a 0 after the status register is read or when the VDP is externally reset.",
       "page": "2-11",
       "document": "dataManual",
-      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+      "governs": ["tms9918a", "tms9928a", "tms9929a"],
+      "heldBy": [
+        "conformance/hardware.test.py::PrintedDisplayTest.test_a_status_read_and_a_reset_each_clear_the_frame_flag"
+      ]
     },
     "coincidence": {
       "value": 32,
@@ -187,7 +233,10 @@
       "quote": "The setting of the fifth sprite flag will not cause an interrupt.",
       "page": "2-11",
       "document": "dataManual",
-      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+      "governs": ["tms9918a", "tms9928a", "tms9929a"],
+      "heldBy": [
+        "conformance/hardware.test.py::PrintedSpriteTest.test_a_fifth_sprite_sets_its_flag_without_an_interrupt"
+      ]
     },
     "fourPerLine": {
       "value": 4,
@@ -204,28 +253,38 @@
       "quote": "Sprite 0 is on the outside or highest plane, and sprite 31 is on the plane immediately adjacent to Pattern Plane.",
       "page": "2-16",
       "document": "dataManual",
-      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+      "governs": ["tms9918a", "tms9928a", "tms9929a"],
+      "heldBy": [
+        "conformance/hardware.test.py::PrintedSpriteTest.test_plane_0_shows_in_front_of_plane_1"
+      ]
     },
     "transparentBackdrop": {
       "value": "black, or external video when it is selected",
       "quote": "When the backdrop color register contains the transparent code, the backdrop automatically defaults to black if the external VDP mode is not selected.",
       "page": "2-16",
       "document": "dataManual",
-      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+      "governs": ["tms9918a", "tms9928a", "tms9929a"],
+      "heldBy": [
+        "conformance/hardware.test.py::PrintedDisplayTest.test_a_transparent_backdrop_is_black_or_the_external_video"
+      ]
     },
     "noSpritesInText": {
       "value": true,
       "quote": "The 32 Sprite Planes are used for the 32 sprites in the Multicolor and Graphics modes. They are not used in the Text mode and are automatically transparent.",
       "page": "2-16",
       "document": "dataManual",
-      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+      "governs": ["tms9918a", "tms9928a", "tms9929a"],
+      "heldBy": ["conformance/hardware.test.py::PrintedSpriteTest.test_text_mode_draws_no_sprite"]
     },
     "graphicsOne": {
       "value": [0, 0, 0],
       "quote": "The VDP is in Graphics I mode when M1, M2, and M3 bits in VDP registers 1 and 0 are zero.",
       "page": "2-17",
       "document": "dataManual",
-      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+      "governs": ["tms9918a", "tms9928a", "tms9929a"],
+      "heldBy": [
+        "conformance/hardware.test.py::TableTest.test_the_mode_bits_select_the_modes_printed"
+      ]
     },
     "graphicsTwo": {
       "value": [0, 0, 1],
@@ -270,7 +329,10 @@
       "quote": "It is defined such that a value of -1 puts the sprite butted up at the top of the screen, touching the backdrop area.",
       "page": "2-26",
       "document": "dataManual",
-      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+      "governs": ["tms9918a", "tms9928a", "tms9929a"],
+      "heldBy": [
+        "conformance/hardware.test.py::SpriteTest.test_a_position_of_minus_one_reaches_the_top_line"
+      ]
     },
     "earlyClock": {
       "value": 32,
@@ -287,14 +349,21 @@
       "quote": "This permits the Sprite Attribute Table to be shortened to the minimum size required",
       "page": "2-27",
       "document": "dataManual",
-      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+      "governs": ["tms9918a", "tms9928a", "tms9929a"],
+      "heldBy": [
+        "conformance/hardware.test.py::SpriteTest.test_the_sprite_constants_are_the_ones_printed",
+        "conformance/hardware.test.py::PrintedSpriteTest.test_no_plane_after_the_terminator_is_shown"
+      ]
     },
     "magnification": {
       "value": 2,
       "quote": "each bit in the Sprite Generator maps into 2 x 2 pixels on the TV screen, effectively doubling the size of the sprite to 16 x 16.",
       "page": "2-27",
       "document": "dataManual",
-      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+      "governs": ["tms9918a", "tms9928a", "tms9929a"],
+      "heldBy": [
+        "conformance/hardware.test.py::PrintedSpriteTest.test_a_magnified_bit_covers_the_printed_square_of_dots"
+      ]
     },
     "dividers": {
       "value": {
@@ -321,7 +390,8 @@
       "page": "3-8",
       "document": "dataManual",
       "readFrom": "The text layer for every cell but the top-blanking count, which it garbles; the page image for all of them. Both agree wherever both are legible, and Section 5.5's 828 microsecond back blanking is 13 lines of 63.695 microseconds.",
-      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+      "governs": ["tms9918a", "tms9928a", "tms9929a"],
+      "heldBy": ["conformance/hardware.test.py::TimingTest.test_the_line_counts_are_table_3_3"]
     },
     "frameLines": {
       "value": {
@@ -342,14 +412,21 @@
       "quote": "For the External VDP input plane to be visible, the External VDP Enable bit in VDP Register 0 (EXVID) should be set to a 1.",
       "page": "3-8",
       "document": "dataManual",
-      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+      "governs": ["tms9918a", "tms9928a", "tms9929a"],
+      "heldBy": [
+        "conformance/hardware.test.py::PortTest.test_the_flags_and_enables_sit_where_the_manual_puts_them",
+        "conformance/hardware.test.py::PrintedDisplayTest.test_a_transparent_backdrop_is_black_or_the_external_video"
+      ]
     },
     "memoryCycle": {
       "value": 372,
       "quote": "Memory read or write cycle time 372 ns",
       "page": "5-4",
       "document": "dataManual",
-      "governs": ["tms9918a", "tms9928a", "tms9929a"]
+      "governs": ["tms9918a", "tms9928a", "tms9929a"],
+      "heldBy": [
+        "conformance/hardware.test.py::PrintedAccessTest.test_sixteen_printed_memory_cycles_span_the_gap_between_graphics_windows"
+      ]
     },
     "colourLevels": {
       "value": "levels.py, row for row",
