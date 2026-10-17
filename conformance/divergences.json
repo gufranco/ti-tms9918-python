@@ -111,6 +111,28 @@
       "wouldReopenIt": "A reset on hardware that changes register 2 to 7."
     },
     {
+      "id": "reset-counters",
+      "severity": "unstated",
+      "status": "open",
+      "topic": "Where reset leaves the line and dot counters.",
+      "documentSays": {
+        "rung": 1,
+        "claim": "Known states, without naming them.",
+        "quote": "sets the horizontal and vertical counters to known states",
+        "source": "TMS9918A/TMS9928A/TMS9929A Data Manual, page 2-5"
+      },
+      "referenceSays": {
+        "rung": 5,
+        "claim": "MAME's raster starts on the line where its visible area ends, 18 lines before the top of the blanking. Its device_reset only schedules the first line update at the top of the blanking. Measured in MAME 0.289 by timing an SG-1000 cartridge's first VRAM write from power on: the elapsed time agrees to 7 dots, and the raster positions differ by 18 lines and 1 dot."
+      },
+      "thisPackageDid": {
+        "claim": "Starts at the first line of top blanking, dot 0.",
+        "why": "Neither value is a measurement of the part. MAME's start is where its screen begins, not a reading of the chip."
+      },
+      "packageFollows": "neither",
+      "wouldCloseIt": "Release RESET and time the first INT."
+    },
+    {
       "id": "frame-flag-line",
       "severity": "medium",
       "status": "open",

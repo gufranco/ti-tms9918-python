@@ -167,7 +167,7 @@ the frame flag. A TMS9929A board settles its border split the same way.
 
 **Why it is open.** The manual says known states without naming them.
 
-**Where the value came from.** MAME device_reset, which starts its line timer at the top of the blanking.
+**Where the value came from.** This package's choice. MAME's raster starts 18 lines earlier, where its visible area ends; see divergences.json.
 
 **What would settle it.** Release RESET and time the first INT.
 

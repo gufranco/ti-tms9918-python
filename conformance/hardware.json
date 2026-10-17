@@ -484,7 +484,7 @@
       "value": "the first line of top blanking, dot 0",
       "verified": false,
       "why": "The manual says known states without naming them.",
-      "source": "MAME device_reset, which starts its line timer at the top of the blanking.",
+      "source": "This package's choice. MAME's raster starts 18 lines earlier, where its visible area ends; see divergences.json.",
       "howToSettleIt": "Release RESET and time the first INT.",
       "governs": ["tms9918a", "tms9928a", "tms9929a"]
     },
