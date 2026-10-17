@@ -34,26 +34,26 @@ def worst_wait(table: tuple[int, ...]) -> int:
     return longest
 
 
-class ConversionTest(unittest.TestCase):
-    def test_a_v99x8_position_becomes_a_master_tick_from_the_active_start(self) -> None:
+class PositionTest(unittest.TestCase):
+    def test_the_first_graphics_window_in_the_picture_is_45_ticks_in(self) -> None:
         # Arrange
-        position = 258
+        table = slots.TABLES["graphics"]
 
         # Act
-        tick = slots.from_openmsx(position)
+        first = table[0]
 
         # Assert
-        self.assertEqual(tick, 0)
+        self.assertEqual(first, 45)
 
-    def test_a_position_before_the_active_start_wraps_to_the_line_before(self) -> None:
+    def test_every_mode_has_a_window_127_ticks_before_the_line_ends(self) -> None:
         # Arrange
-        position = 4
+        tables = slots.TABLES
 
         # Act
-        tick = slots.from_openmsx(position)
+        held = {name: 684 - 127 in table for name, table in tables.items()}
 
         # Assert
-        self.assertEqual(tick, 684 - 127)
+        self.assertEqual(held, dict.fromkeys(tables, True))
 
     def test_every_table_is_sorted_and_inside_one_line(self) -> None:
         # Arrange

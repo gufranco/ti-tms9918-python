@@ -69,8 +69,10 @@ by argument.
 
 The manual says how often the processor gets a window and how long an access can
 wait. It never says which dot a window falls on. The positions in
-[`tms9918/slots.py`](tms9918/slots.py) are openMSX's MSX1 tables, kept in its own
-units and converted on import. Every bound TI printed is a test over them.
+[`tms9918/slots.py`](tms9918/slots.py) are openMSX's MSX1 positions, restated
+in this package's master ticks from the start of the active line and built from
+their strides. openMSX's tables are not carried, only the positions they give.
+Every bound TI printed is a test over them.
 
 **If you are about to change a window, a lead time or a fetch position, run the
 census before and after.** A moved count of lost accesses means the windows moved.
