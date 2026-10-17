@@ -3,7 +3,9 @@ import json
 import subprocess
 import sys
 import tempfile
+import threading
 import unittest
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any, override
 
@@ -32,6 +34,30 @@ def a_file(where: Path, name: str, body: bytes) -> dict[str, Any]:
         "sha256": hashlib.sha256(body).hexdigest(),
         "bytes": len(body),
     }
+
+
+class BrowsersOnly(BaseHTTPRequestHandler):
+    def do_GET(self) -> None:
+        agent = self.headers.get("User-Agent", "")
+        allowed = agent.startswith("Mozilla/")
+        body = b"a document" if allowed else b"forbidden"
+        self.send_response(200 if allowed else 403)
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    @override
+    def log_message(self, *_args: object) -> None:
+        return
+
+
+def a_server_that_refuses_curl(test: unittest.TestCase) -> str:
+    server = ThreadingHTTPServer(("127.0.0.1", 0), BrowsersOnly)
+    worker = threading.Thread(target=server.serve_forever, daemon=True)
+    worker.start()
+    test.addCleanup(server.server_close)
+    test.addCleanup(server.shutdown)
+    return f"http://127.0.0.1:{server.server_address[1]}/held.pdf"
 
 
 def stand_in(test: unittest.TestCase, entries: list[dict[str, Any]]) -> None:
@@ -227,6 +253,22 @@ class DownloadTest(unittest.TestCase):
         # Arrange
         entry = a_file(self.source, "held.pdf", b"a document")
         entry["file"] = "manufacturer/held.pdf"
+
+        # Act
+        documents.download(entry, self.root)
+
+        # Assert
+        self.assertEqual((self.root / "manufacturer" / "held.pdf").read_bytes(), b"a document")
+
+    def test_a_host_that_turns_curl_away_still_serves_the_document(self) -> None:
+        # Arrange
+        entry = {
+            "file": "manufacturer/held.pdf",
+            "rung": 1,
+            "retrievedFrom": a_server_that_refuses_curl(self),
+            "sha256": hashlib.sha256(b"a document").hexdigest(),
+            "bytes": len(b"a document"),
+        }
 
         # Act
         documents.download(entry, self.root)

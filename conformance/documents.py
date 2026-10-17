@@ -16,6 +16,8 @@ USAGE = "usage: documents.py [--check] [--only SUBSTRING]"
 
 TIMEOUT = 120
 
+BROWSER = "Mozilla/5.0"
+
 RENDERED = "renderedAs"
 
 PRINTED = "printedFromPage"
@@ -49,7 +51,17 @@ def download(entry: dict[str, Any], where: Path) -> None:
     path = where / str(entry["file"])
     path.parent.mkdir(parents=True, exist_ok=True)
     done = subprocess.run(
-        ["curl", "-sSL", "--fail", "--globoff", "-o", str(path), str(entry["retrievedFrom"])],
+        [
+            "curl",
+            "-sSL",
+            "--fail",
+            "--globoff",
+            "--user-agent",
+            BROWSER,
+            "-o",
+            str(path),
+            str(entry["retrievedFrom"]),
+        ],
         capture_output=True,
         text=True,
         check=False,
