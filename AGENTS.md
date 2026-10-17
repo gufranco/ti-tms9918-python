@@ -80,6 +80,14 @@ census before and after.** A moved count of lost accesses means the windows move
 measured threshold: 26 processor cycles between writes can lose one, and 27
 never does.
 
+## Three machine names are exempt, and only three
+
+The TMS9918A was a catalogue part, so no tracked file names a machine it shipped
+in, and [`conformance/family.test.py`](conformance/family.test.py) holds the
+list it sweeps for. The SG-1000 and the SC-3000 are named because their library
+is the census's oracle. The MSX is named because openMSX's cited measurements
+were taken on one. Any other mention names the part by its number.
+
 ## Every gate, in the order to run them
 
 ```bash

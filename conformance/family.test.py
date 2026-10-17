@@ -46,7 +46,7 @@ BUILDABLE = why_it_cannot_build_here() is None
 A_PART = KIND == "Part"
 
 
-SOLD_AS_A_COMPONENT = False
+SOLD_AS_A_COMPONENT = True
 
 INTERFACE = (
     "step",
@@ -2292,7 +2292,22 @@ class WrittenTheSameWayTest(unittest.TestCase):
         self.assertIsNone(found)
 
 
-MACHINES: dict[str, tuple[str, ...]] = {}
+MACHINES: dict[str, tuple[str, ...]] = {
+    "tms9918": (
+        "Coleco",
+        "ColecoVision",
+        "Einstein",
+        "Mark III",
+        "Master System",
+        "Memotech",
+        "NABU",
+        "Sega",
+        "Sord",
+        "Spectravideo",
+        "TI-99/4A",
+        "Tomy",
+    ),
+}
 
 
 NOT_THIS_PACKAGES_WORDS = ("conformance/family.test.py", "FAMILY.md")

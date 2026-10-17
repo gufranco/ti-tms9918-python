@@ -261,7 +261,7 @@ The census boots every image in an SG-1000 library on an SG-1000 board, with the
 
 Some cartridges carry their own RAM, among them Othello, The Castle and the Taiwanese Dahjee boards. [`conformance/boards.json`](conformance/boards.json) names each of those images by whole-file SHA-1 with its board, as MAME's SG-1000 software list records them, and the harness maps the RAM where that board puts it. Every other image runs on a plain board.
 
-Two properties gate the run: the model raises no exception on any image, and every retail image turns its display on. Accesses requested before the previous one was served are counted and named per image but gate nothing, because shipped games do write faster than the windows allow and the chip loses those writes too. Hacks, homebrew, translations, betas, SC-3000 and Master System programs and BIOS images never gate.
+Two properties gate the run: the model raises no exception on any image, and every retail image turns its display on. Accesses requested before the previous one was served are counted and named per image but gate nothing, because shipped games do write faster than the windows allow and the chip loses those writes too. Hacks, homebrew, translations, betas, SC-3000 programs, `.sf` and `.sms` images and BIOS images never gate.
 
 | Result of the last run | Count |
 |:--|:--|
