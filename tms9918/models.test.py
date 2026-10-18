@@ -5,10 +5,29 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 import functools  # noqa: E402
+import itertools  # noqa: E402
 import unittest  # noqa: E402
+from typing import Any  # noqa: E402
 
-from tms9918 import models  # noqa: E402
-from tms9918.errors import UnknownModelError  # noqa: E402
+import tms9918  # noqa: E402
+
+SAMPLED_DOT = 100
+
+
+def line_regions(model: str) -> list[tuple[str, int]]:
+    part: Any = tms9918.Chip(model, tms9918.Vram(fill=0)).reset()
+    found: list[str] = []
+    for line in range(part.part.lines):
+        while (part.line, part.dot) != (line, SAMPLED_DOT):
+            part.clock()
+        part.clock()
+        found.append(part.region)
+    return [(region, len(list(run))) for region, run in itertools.groupby(found)]
+
+
+def borders(model: str) -> tuple[int, int]:
+    runs = line_regions(model)
+    return (runs[-1][1], runs[1][1])
 
 
 class CatalogueTest(unittest.TestCase):
@@ -17,14 +36,14 @@ class CatalogueTest(unittest.TestCase):
         documented = ["tms9918a", "tms9928a", "tms9929a"]
 
         # Act
-        covered = sorted(models.MODELS)
+        covered = sorted(tms9918.MODELS)
 
         # Assert
         self.assertEqual(covered, documented)
 
     def test_the_two_ntsc_parts_run_262_lines_and_the_pal_part_313(self) -> None:
         # Arrange
-        catalogue = models.MODELS
+        catalogue = tms9918.MODELS
 
         # Act
         lines = {name: model.lines for name, model in catalogue.items()}
@@ -34,7 +53,7 @@ class CatalogueTest(unittest.TestCase):
 
     def test_only_the_composite_part_brings_out_the_clock_pins(self) -> None:
         # Arrange
-        catalogue = models.MODELS
+        catalogue = tms9918.MODELS
 
         # Act
         pins = {name: model.clock_pins for name, model in catalogue.items()}
@@ -44,27 +63,27 @@ class CatalogueTest(unittest.TestCase):
 
     def test_the_ntsc_borders_are_the_ones_table_3_3_prints(self) -> None:
         # Arrange
-        part = models.MODELS["tms9918a"]
+        model = "tms9918a"
 
         # Act
-        borders = (part.top_border, part.bottom_border)
+        found = borders(model)
 
         # Assert
-        self.assertEqual(borders, (27, 24))
+        self.assertEqual(found, (27, 24))
 
     def test_the_pal_borders_fill_the_294_lines_figure_5_13_gives_them(self) -> None:
         # Arrange
-        part = models.MODELS["tms9929a"]
+        model = "tms9929a"
 
         # Act
-        bordered = part.top_border + 192 + part.bottom_border
+        top, bottom = borders(model)
 
         # Assert
-        self.assertEqual(bordered, 294)
+        self.assertEqual(top + 192 + bottom, 294)
 
     def test_a_model_describes_itself_by_name_lines_and_output(self) -> None:
         # Arrange
-        part = models.MODELS["tms9929a"]
+        part = tms9918.MODELS["tms9929a"]
 
         # Act
         shown = repr(part)
@@ -79,30 +98,30 @@ class LookupTest(unittest.TestCase):
         spelled = " TMS-9928A "
 
         # Act
-        found = models.lookup(spelled)
+        found = tms9918.Chip(spelled).part
 
         # Assert
-        self.assertIs(found, models.MODELS["tms9928a"])
+        self.assertIs(found, tms9918.MODELS["tms9928a"])
 
     def test_a_short_alias_finds_its_part(self) -> None:
         # Arrange
         alias = "9929a"
 
         # Act
-        found = models.lookup(alias)
+        found = tms9918.Chip(alias).part
 
         # Assert
-        self.assertIs(found, models.MODELS["tms9929a"])
+        self.assertIs(found, tms9918.MODELS["tms9929a"])
 
     def test_the_part_without_the_a_suffix_is_not_taken_for_it(self) -> None:
         # Arrange
         name = "tms9918"
 
         # Act
-        attempt = functools.partial(models.lookup, name)
+        attempt = functools.partial(tms9918.Chip, name)
 
         # Assert
-        with self.assertRaisesRegex(UnknownModelError, "tms9918 is not a model"):
+        with self.assertRaisesRegex(tms9918.UnknownModelError, "tms9918 is not a model"):
             attempt()
 
     def test_naming_no_model_is_refused_with_the_list(self) -> None:
@@ -110,10 +129,10 @@ class LookupTest(unittest.TestCase):
         name = None
 
         # Act
-        attempt = functools.partial(models.lookup, name)
+        attempt = functools.partial(tms9918.Chip, name)
 
         # Assert
-        with self.assertRaisesRegex(UnknownModelError, "tms9918a, tms9928a, tms9929a"):
+        with self.assertRaisesRegex(tms9918.UnknownModelError, "tms9918a, tms9928a, tms9929a"):
             attempt()
 
     def test_a_name_no_model_goes_by_is_refused(self) -> None:
@@ -121,10 +140,10 @@ class LookupTest(unittest.TestCase):
         name = "tms9938"
 
         # Act
-        attempt = functools.partial(models.lookup, name)
+        attempt = functools.partial(tms9918.Chip, name)
 
         # Assert
-        with self.assertRaisesRegex(UnknownModelError, "tms9938 is not a model"):
+        with self.assertRaisesRegex(tms9918.UnknownModelError, "tms9938 is not a model"):
             attempt()
 
 

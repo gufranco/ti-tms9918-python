@@ -40,8 +40,8 @@ class PartTest(unittest.TestCase):
 
         # Assert
         self.assertEqual(
-            (part.model, part.registers[0], part.registers[1], part.status & 0xE0, part.latch),
-            (model, 0, 0, 0, False),
+            (part.model, part.registers[0], part.registers[1], part.status & 0xE0),
+            (model, 0, 0, 0),
         )
 
     def test_programming_a_register_loads_it(self) -> None:
@@ -73,6 +73,18 @@ class PartTest(unittest.TestCase):
 
         # Assert
         self.assertEqual(shown, 9)
+
+
+class WatchTest(unittest.TestCase):
+    def test_a_part_asked_for_nothing_is_never_served(self) -> None:
+        # Arrange
+        part = bench.watched({1: 0x40})
+
+        # Act
+        waited = bench.ticks_to_serve(part)
+
+        # Assert
+        self.assertEqual(waited, bench.WAIT_LIMIT)
 
 
 if __name__ == "__main__":

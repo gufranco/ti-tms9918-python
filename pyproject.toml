@@ -89,12 +89,13 @@ enable_error_code = [
 files = ["tms9918", "conformance"]
 
 [[tool.mypy.overrides]]
-module = ["z80.*"]
+module = ["z80.*", "setuptools.*"]
 follow_imports = "skip"
 ignore_missing_imports = true
 
 [tool.coverage.run]
-source = ["tms9918", "conformance"]
+source = ["."]
+omit = ["zilog-z80-python/*"]
 branch = true
 
 [tool.coverage.report]

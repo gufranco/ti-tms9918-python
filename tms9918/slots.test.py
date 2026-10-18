@@ -4,73 +4,170 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
+import copy  # noqa: E402
+import functools  # noqa: E402
 import itertools  # noqa: E402
 import unittest  # noqa: E402
+from typing import Any  # noqa: E402
 
-from tms9918 import slots  # noqa: E402
+import tms9918  # noqa: E402
 
 MASTER_HZ = 10_738_635
 
 MICROSECONDS_PER_TICK = 1e6 / MASTER_HZ
 
+TICKS = 684
+
 PATTERN_ACTIVE = range(0, 512)
 
 TEXT_ACTIVE = range(12, 492)
 
+WATCHED = 0x3000
 
-def largest_gap_inside(table: tuple[int, ...], window: range) -> int:
-    inside = [one for one in table if one in window]
+WAIT_LIMIT = 1 << 10
+
+PICTURE_LINE = 100
+
+LATER_PICTURE_LINE = 150
+
+LINES = 262
+
+GRAPHICS = 0x40
+
+MULTICOLOR = 0x48
+
+TEXT = 0x50
+
+OFF = 0x00
+
+MODES = {"graphics": GRAPHICS, "multicolor": MULTICOLOR, "text": TEXT, "off": OFF}
+
+
+class Watch:
+    __slots__ = ("hits", "store")
+
+    def __init__(self) -> None:
+        self.store = tms9918.Vram(fill=0)
+        self.hits = 0
+
+    def read8(self, address: int) -> int:
+        self.hits += address == WATCHED
+        return self.store.read8(address)
+
+    def write8(self, address: int, value: int) -> None:
+        self.hits += address == WATCHED
+        self.store.write8(address, value)
+
+
+def ready(r1: int, line: int) -> Any:
+    part: Any = tms9918.Chip("tms9918a", Watch()).reset()
+    part.read_status()
+    for register, value in {0: 0, 1: r1, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0}.items():
+        part.write_control(value)
+        part.write_control(0x80 | register)
+    part.write_control(WATCHED & 0xFF)
+    part.write_control(0x40 | WATCHED >> 8)
+    while (part.line, part.dot) != (line, 0):
+        part.clock()
+    return part
+
+
+def served(part: Any) -> bool:
+    part.tick()
+    return bool(part.memory.hits)
+
+
+def ticks_to_window(part: Any) -> int:
+    part.write_data(0x5A)
+    return next(waited for waited in range(WAIT_LIMIT) if served(part))
+
+
+@functools.cache
+def waits(r1: int, line: int = PICTURE_LINE) -> dict[int, int]:
+    part = ready(r1, line)
+    found: dict[int, int] = {}
+    for asked in range(TICKS):
+        found[asked] = ticks_to_window(copy.deepcopy(part))
+        part.tick()
+    return found
+
+
+def windows(r1: int, line: int = PICTURE_LINE) -> list[int]:
+    return sorted({(asked + waited) % TICKS for asked, waited in waits(r1, line).items()})
+
+
+def landing(line: int, asked: int) -> int:
+    part = ready(GRAPHICS, line)
+    for _ in range(asked):
+        part.tick()
+    return asked + ticks_to_window(part)
+
+
+def largest_gap_inside(found: list[int], window: range) -> int:
+    inside = [one for one in found if one in window]
     return max(later - earlier for earlier, later in itertools.pairwise(inside))
 
 
-def worst_wait(table: tuple[int, ...]) -> int:
-    served = set(table)
-    longest = 0
-    for asked in range(slots.TICKS):
-        waited = slots.LEAD
-        while (asked + waited) % slots.TICKS not in served:
-            waited += 1
-        longest = max(longest, waited)
-    return longest
+def worst_wait(r1: int) -> float:
+    return max(waits(r1).values()) * MICROSECONDS_PER_TICK
+
+
+def loses_at(spacing_in_cycles: int) -> bool:
+    part = ready(GRAPHICS, PICTURE_LINE)
+    for _ in range(TICKS):
+        trial = copy.deepcopy(part)
+        trial.write_data(0x11)
+        for _ in range(spacing_in_cycles * 3):
+            trial.tick()
+        trial.write_data(0x22)
+        trial.run_dots(TICKS)
+        if trial.memory.store.read8(WATCHED) != 0x11:
+            return True
+        part.tick()
+    return False
 
 
 class PositionTest(unittest.TestCase):
     def test_the_first_graphics_window_in_the_picture_is_45_ticks_in(self) -> None:
         # Arrange
-        table = slots.TABLES["graphics"]
+        mode = GRAPHICS
 
         # Act
-        first = table[0]
+        first = windows(mode)[0]
 
         # Assert
         self.assertEqual(first, 45)
 
     def test_every_mode_has_a_window_127_ticks_before_the_line_ends(self) -> None:
         # Arrange
-        tables = slots.TABLES
+        modes = MODES
 
         # Act
-        held = {name: 684 - 127 in table for name, table in tables.items()}
+        held = {name: 684 - 127 in windows(r1) for name, r1 in modes.items()}
 
         # Assert
-        self.assertEqual(held, dict.fromkeys(tables, True))
+        self.assertEqual(held, dict.fromkeys(modes, True))
 
-    def test_every_table_is_sorted_and_inside_one_line(self) -> None:
+    def test_the_windows_fall_on_the_same_ticks_on_every_picture_line(self) -> None:
         # Arrange
-        tables = slots.TABLES.values()
+        modes = MODES
 
         # Act
-        valid = [list(one) == sorted(one) and one[0] >= 0 and one[-1] < 684 for one in tables]
+        moved = [
+            name
+            for name, r1 in modes.items()
+            if windows(r1, PICTURE_LINE) != windows(r1, LATER_PICTURE_LINE)
+        ]
 
         # Assert
-        self.assertEqual(valid, [True] * len(slots.TABLES))
+        self.assertEqual(moved, [])
 
-    def test_the_tables_hold_the_counts_openmsx_lists(self) -> None:
+    def test_the_lines_hold_the_counts_openmsx_lists(self) -> None:
         # Arrange
-        tables = slots.TABLES
+        modes = MODES
 
         # Act
-        counts = {name: len(table) for name, table in tables.items()}
+        counts = {name: len(windows(r1)) for name, r1 in modes.items()}
 
         # Assert
         self.assertEqual(counts, {"graphics": 19, "multicolor": 51, "text": 91, "off": 107})
@@ -81,17 +178,17 @@ class ManualBoundsTest(unittest.TestCase):
         self,
     ) -> None:
         # Arrange
-        table = slots.TABLES["graphics"]
+        found = windows(GRAPHICS)
 
         # Act
-        gap = largest_gap_inside(table, PATTERN_ACTIVE)
+        gap = largest_gap_inside(found, PATTERN_ACTIVE)
 
         # Assert
         self.assertEqual(gap, 16 * 4)
 
     def test_which_is_the_595_microseconds_table_2_2_prints(self) -> None:
         # Arrange
-        gap = largest_gap_inside(slots.TABLES["graphics"], PATTERN_ACTIVE)
+        gap = largest_gap_inside(windows(GRAPHICS), PATTERN_ACTIVE)
 
         # Act
         microseconds = gap * MICROSECONDS_PER_TICK
@@ -101,56 +198,45 @@ class ManualBoundsTest(unittest.TestCase):
 
     def test_text_windows_come_once_in_three_memory_cycles(self) -> None:
         # Arrange
-        table = slots.TABLES["text"]
+        found = windows(TEXT)
 
         # Act
-        gap = largest_gap_inside(table, TEXT_ACTIVE)
+        gap = largest_gap_inside(found, TEXT_ACTIVE)
 
         # Assert
         self.assertEqual(gap, 3 * 4)
 
     def test_multicolor_windows_come_once_in_four_memory_cycles(self) -> None:
         # Arrange
-        table = slots.TABLES["multicolor"]
+        found = windows(MULTICOLOR)
 
         # Act
-        gap = largest_gap_inside(table, PATTERN_ACTIVE)
+        gap = largest_gap_inside(found, PATTERN_ACTIVE)
 
         # Assert
         self.assertEqual(gap, 4 * 4)
 
     def test_no_access_in_any_mode_waits_past_the_8_microseconds_printed(self) -> None:
         # Arrange
-        tables = slots.TABLES
+        modes = MODES
 
         # Act
-        waits = {name: worst_wait(table) * MICROSECONDS_PER_TICK for name, table in tables.items()}
+        found = {name: worst_wait(r1) for name, r1 in modes.items()}
 
         # Assert
-        self.assertEqual([name for name, wait in waits.items() if wait > 8.0], [])
+        self.assertEqual([name for name, wait in found.items() if wait > 8.0], [])
 
     def test_with_the_display_off_an_access_rounds_to_the_2_microseconds_printed(
         self,
     ) -> None:
         # Arrange
-        table = slots.TABLES["off"]
+        mode = OFF
 
         # Act
-        microseconds = worst_wait(table) * MICROSECONDS_PER_TICK
+        microseconds = worst_wait(mode)
 
         # Assert
         self.assertEqual(round(microseconds), 2)
-
-
-def loses_at(spacing_in_cycles: int) -> bool:
-    served = set(slots.TABLES["graphics"])
-    for asked in range(slots.TICKS):
-        waited = slots.LEAD
-        while (asked + waited) % slots.TICKS not in served:
-            waited += 1
-        if waited > spacing_in_cycles * 3:
-            return True
-    return False
 
 
 class MeasuredThresholdTest(unittest.TestCase):
@@ -176,25 +262,25 @@ class MeasuredThresholdTest(unittest.TestCase):
 
 
 class SelectionTest(unittest.TestCase):
-    def test_the_display_grid_off_means_the_off_table_whatever_the_mode(self) -> None:
+    def test_the_display_off_means_the_off_windows_whatever_the_mode(self) -> None:
         # Arrange
-        modes = ("graphics", "multicolor", "text")
+        modes = (GRAPHICS, MULTICOLOR, TEXT)
 
         # Act
-        chosen = {slots.table_for(False, mode) for mode in modes}
+        chosen = [windows(r1 & ~GRAPHICS) for r1 in modes]
 
         # Assert
-        self.assertEqual(chosen, {slots.TABLES["off"]})
+        self.assertEqual(chosen, [windows(OFF)] * len(modes))
 
-    def test_the_display_grid_on_means_the_mode_table(self) -> None:
+    def test_the_display_on_means_each_mode_its_own_windows(self) -> None:
         # Arrange
-        modes = ("graphics", "multicolor", "text")
+        modes = (GRAPHICS, MULTICOLOR, TEXT, OFF)
 
         # Act
-        chosen = [slots.table_for(True, mode) for mode in modes]
+        chosen = {tuple(windows(r1)) for r1 in modes}
 
         # Assert
-        self.assertEqual(chosen, [slots.TABLES[mode] for mode in modes])
+        self.assertEqual(len(chosen), len(modes))
 
 
 class GridTest(unittest.TestCase):
@@ -202,36 +288,33 @@ class GridTest(unittest.TestCase):
         self,
     ) -> None:
         # Arrange
-        lines = 262
+        asked = ((LINES - 2, 617), (LINES - 2, 621), (LINES - 3, 621))
 
         # Act
-        before, after = (
-            slots.grid_line(lines - 2, 635, lines),
-            slots.grid_line(lines - 2, 636, lines),
-        )
+        found = [landing(line, tick) for line, tick in asked]
 
         # Assert
-        self.assertEqual((before, after), (-2, -1))
+        self.assertEqual(found, [633, 665, 637])
 
-    def test_and_counts_lines_from_the_first_active_one(self) -> None:
+    def test_and_turns_off_48_ticks_before_the_last_active_line_ends(self) -> None:
         # Arrange
-        lines = 313
+        asked = ((191, 621), (190, 621))
 
         # Act
-        found = (slots.grid_line(0, 0, lines), slots.grid_line(191, 636, lines))
+        found = [landing(line, tick) for line, tick in asked]
 
         # Assert
-        self.assertEqual(found, (0, 192))
+        self.assertEqual(found, [637, 665])
 
-    def test_the_grid_line_decides_whether_the_display_grid_applies(self) -> None:
+    def test_the_grid_spans_the_line_before_the_first_to_the_last_active_one(self) -> None:
         # Arrange
-        lines = (-2, -1, 191, 192)
+        asked = ((LINES - 3, 617), (LINES - 1, 617), (191, 100), (192, 100))
 
         # Act
-        applies = [slots.display_grid(line) for line in lines]
+        found = [landing(line, tick) for line, tick in asked]
 
         # Assert
-        self.assertEqual(applies, [False, True, True, False])
+        self.assertEqual(found, [633, 665, 173, 117])
 
 
 if __name__ == "__main__":

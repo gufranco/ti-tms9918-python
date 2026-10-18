@@ -8,7 +8,7 @@ English | [日本語](README.ja.md) | [简体中文](README.zh-Hans.md) | [繁�
 [![Release](https://img.shields.io/github/v/release/gufranco/ti-tms9918-python)](https://github.com/gufranco/ti-tms9918-python/releases)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-**348** distinct SG-1000 images booted for **600** frames each, **0** property failures over the **203** retail ones, **64** quotes located in the manual, **3** parts, **699** tests, **100%** statement and branch coverage, no dependencies
+**348** distinct SG-1000 images booted for **600** frames each, **0** property failures over the **203** retail ones, **64** quotes located in the manual, **3** parts, **711** tests, **100%** statement and branch coverage, no dependencies
 
 ```python
 import tms9918
@@ -117,17 +117,18 @@ Releases follow [Semantic Versioning](https://semver.org/) and are cut from the 
 | `tms9918.UnknownModelError` | Raised for a missing or unknown model name. The message lists the names accepted |
 | `tms9918.CPUCLK`, `tms9918.GROMCLK` | The bits in `tick()`'s return value that mark a pulse on each clock pin. CPUCLK pulses every 3 ticks and GROMCLK every 24 |
 | `tms9918.EXTERNAL` | The `colour` value where external video shows through |
-| `tms9918.levels` | `COMPOSITE` and `DIFFERENCE`, the signal levels Table 2-3 prints for each colour, and `burst(model)` |
+| `tms9918.COMPOSITE`, `tms9918.DIFFERENCE` | The signal levels Table 2-3 prints for each colour |
+| `tms9918.COMPOSITE_SPECIAL`, `tms9918.DIFFERENCE_SPECIAL` | The levels Table 2-3 prints for black, sync, the colour burst and external video. `COMPOSITE_SPECIAL` holds `black`, `burst` and `sync`, and `DIFFERENCE_SPECIAL` holds `black`, `sync` and `external` |
+| `tms9918.burst(model)` | The colour burst on the two colour difference outputs of the `tms9928a` or the `tms9929a` |
 | `tms9918.__version__` | The installed version |
 
 ```python
 import tms9918
-from tms9918 import levels
 
 for name, model in tms9918.MODELS.items():
     print(name, model.aliases, model.lines, model.output, model.clock_pins)
 
-print(levels.COMPOSITE[0xF], levels.DIFFERENCE[0x4], levels.burst("tms9929a"))
+print(tms9918.COMPOSITE[0xF], tms9918.DIFFERENCE[0x4], tms9918.burst("tms9929a"))
 
 try:
     tms9918.Chip("tms9938")

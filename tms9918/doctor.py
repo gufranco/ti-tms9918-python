@@ -13,7 +13,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable, Sequence
 
 
-def _version(where: Path | None = None) -> str:
+def installed_version(where: Path | None = None) -> str:
     found = re.search(
         r"""VERSION\s*[:=][^"']*["']([^"']+)["']""",
         (where or Path(__file__).resolve().parent / "version.py").read_text(),
@@ -21,12 +21,12 @@ def _version(where: Path | None = None) -> str:
     return found.group(1) if found else "unknown"
 
 
-VERSION = _version()
+VERSION = installed_version()
 
 ROOT = Path(__file__).resolve().parent.parent
 
 
-def _reachable(root: Path = ROOT, path: list[str] | None = None) -> bool:
+def reachable(root: Path = ROOT, path: list[str] | None = None) -> bool:
     where = sys.path if path is None else path
     if str(root) in where:
         return False
@@ -34,7 +34,7 @@ def _reachable(root: Path = ROOT, path: list[str] | None = None) -> bool:
     return True
 
 
-_reachable()
+reachable()
 
 CORPUS = ROOT / "conformance" / "corpus.json"
 
@@ -104,7 +104,7 @@ def _threw(name: str, error: BaseException, advice: str | None = None) -> Findin
     return Finding(name, False, f"{type(error).__name__}: {error}", advice)
 
 
-def _python() -> Finding:
+def check_python() -> Finding:
     running = sys.version_info[:2]
     return Finding(
         "python",
@@ -120,7 +120,7 @@ def _load() -> Any:
     return tms9918
 
 
-def _package(load: Callable[[], Any] = _load) -> Finding:
+def check_package(load: Callable[[], Any] = _load) -> Finding:
     try:
         loaded = load()
     except Exception as error:
@@ -144,7 +144,7 @@ def _program(part: Any, values: dict[int, int]) -> None:
         part.write_control(0x80 | register)
 
 
-def _building(load: Callable[[], Any] = _load) -> Finding:
+def check_building(load: Callable[[], Any] = _load) -> Finding:
     try:
         names = sorted(load().MODELS)
         built = [_ready(name).model for name in names]
@@ -167,7 +167,7 @@ def _frame_period(part: Any, limit: int) -> int:
     return limit + 1
 
 
-def _framing(ready: Callable[[str], Any] = _ready) -> Finding:
+def check_framing(ready: Callable[[str], Any] = _ready) -> Finding:
     try:
         part = ready("tms9929a")
         expected = LINE * part.part.lines
@@ -183,7 +183,7 @@ def _framing(ready: Callable[[str], Any] = _ready) -> Finding:
     )
 
 
-def _accessing(ready: Callable[[str], Any] = _ready) -> Finding:
+def check_accessing(ready: Callable[[str], Any] = _ready) -> Finding:
     try:
         part = ready("tms9918a")
         _program(part, {1: 0x40})
@@ -213,7 +213,7 @@ def _shown(part: Any, count: int) -> list[int]:
     return seen
 
 
-def _rendering(ready: Callable[[str], Any] = _ready) -> Finding:
+def check_rendering(ready: Callable[[str], Any] = _ready) -> Finding:
     try:
         part = ready("tms9928a")
         _program(part, {1: 0x40, 2: 0x06, 3: 0x80, 4: 0x00, 7: 0x04})
@@ -233,7 +233,7 @@ def _rendering(ready: Callable[[str], Any] = _ready) -> Finding:
     )
 
 
-def _manual(manifest: Path = DOCUMENTS, held: Path = HELD_DOCUMENTS) -> Finding:
+def check_manual(manifest: Path = DOCUMENTS, held: Path = HELD_DOCUMENTS) -> Finding:
     try:
         entry = json.loads(manifest.read_text())["documents"][0]
         where = held / str(entry["file"])
@@ -255,7 +255,7 @@ def _manual(manifest: Path = DOCUMENTS, held: Path = HELD_DOCUMENTS) -> Finding:
     )
 
 
-def _corpus(path: Path | str = CORPUS) -> Finding:
+def check_corpus(path: Path | str = CORPUS) -> Finding:
     where = Path(path)
     if not where.is_file():
         return Finding("corpus", False, f"not here: {where}", "run the census to build one")
@@ -272,7 +272,7 @@ def _corpus(path: Path | str = CORPUS) -> Finding:
     )
 
 
-def _harness(find: Callable[[str], Any] = IN_SUBMODULE) -> Finding:
+def check_harness(find: Callable[[str], Any] = IN_SUBMODULE) -> Finding:
     try:
         found = find(HARNESS_MODULE)
     except Exception as error:
@@ -287,7 +287,7 @@ def _harness(find: Callable[[str], Any] = IN_SUBMODULE) -> Finding:
     return Finding("harness", True, f"zilog-z80-python found at {found.origin}")
 
 
-def _library() -> Finding:
+def check_library() -> Finding:
     return Finding(
         "library",
         True,
@@ -297,16 +297,16 @@ def _library() -> Finding:
 
 def examine(corpus: Path | str = CORPUS) -> list[Finding]:
     return [
-        _python(),
-        _package(),
-        _building(),
-        _framing(),
-        _accessing(),
-        _rendering(),
-        _manual(),
-        _corpus(corpus),
-        _harness(),
-        _library(),
+        check_python(),
+        check_package(),
+        check_building(),
+        check_framing(),
+        check_accessing(),
+        check_rendering(),
+        check_manual(),
+        check_corpus(corpus),
+        check_harness(),
+        check_library(),
     ]
 
 

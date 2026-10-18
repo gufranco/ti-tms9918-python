@@ -8,7 +8,7 @@ Texas InstrumentsのTMS9918A、TMS9928A、TMS9929Aビデオディスプレイプ
 [![Release](https://img.shields.io/github/v/release/gufranco/ti-tms9918-python)](https://github.com/gufranco/ti-tms9918-python/releases)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-異なるSG-1000イメージ**348**本をそれぞれ**600**フレーム起動、市販の**203**本で性質の不合格**0**件、マニュアル内で所在を確認した引用**64**件、**3**品種、テスト**699**件、ステートメントとブランチのカバレッジ**100%**、依存関係なし
+異なるSG-1000イメージ**348**本をそれぞれ**600**フレーム起動、市販の**203**本で性質の不合格**0**件、マニュアル内で所在を確認した引用**64**件、**3**品種、テスト**711**件、ステートメントとブランチのカバレッジ**100%**、依存関係なし
 
 ```python
 import tms9918
@@ -117,17 +117,18 @@ python3 tms9918/doctor.py
 | `tms9918.UnknownModelError` | モデル名がない場合や未知の場合に送出されます。メッセージには受け付ける名前が列挙されます |
 | `tms9918.CPUCLK`, `tms9918.GROMCLK` | `tick()`の戻り値のうち、各クロックピンのパルスを示すビットです。CPUCLKは3ティックごと、GROMCLKは24ティックごとにパルスを出します |
 | `tms9918.EXTERNAL` | 外部ビデオが透けて見える箇所の`colour`の値です |
-| `tms9918.levels` | `COMPOSITE`と`DIFFERENCE`、つまりTable 2-3が各色について記載する信号レベルと、`burst(model)`です |
+| `tms9918.COMPOSITE`, `tms9918.DIFFERENCE` | Table 2-3が各色について記載する信号レベルです |
+| `tms9918.COMPOSITE_SPECIAL`, `tms9918.DIFFERENCE_SPECIAL` | Table 2-3が黒、同期、カラーバースト、外部ビデオについて記載するレベルです。`COMPOSITE_SPECIAL`は`black`、`burst`、`sync`を持ち、`DIFFERENCE_SPECIAL`は`black`、`sync`、`external`を持ちます |
+| `tms9918.burst(model)` | `tms9928a`または`tms9929a`の2つの色差出力に乗るカラーバーストです |
 | `tms9918.__version__` | インストールされているバージョンです |
 
 ```python
 import tms9918
-from tms9918 import levels
 
 for name, model in tms9918.MODELS.items():
     print(name, model.aliases, model.lines, model.output, model.clock_pins)
 
-print(levels.COMPOSITE[0xF], levels.DIFFERENCE[0x4], levels.burst("tms9929a"))
+print(tms9918.COMPOSITE[0xF], tms9918.DIFFERENCE[0x4], tms9918.burst("tms9929a"))
 
 try:
     tms9918.Chip("tms9938")

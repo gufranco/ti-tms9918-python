@@ -28,10 +28,6 @@ TABLES = {
 SERVED = {name: frozenset(table) for name, table in TABLES.items()}
 
 
-def table_for(display: bool, mode: str) -> tuple[int, ...]:
-    return TABLES[mode if display else "off"]
-
-
 def grid_line(line: int, tick: int, lines: int) -> int:
     ahead = line + (1 if tick >= GRID_SWITCH else 0)
     return ahead - lines if ahead >= lines - 2 else ahead

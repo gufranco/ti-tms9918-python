@@ -6,7 +6,7 @@ sys.path.insert(0, str(ROOT))
 
 import unittest  # noqa: E402
 
-from tms9918 import levels  # noqa: E402
+import tms9918  # noqa: E402
 
 
 class CompositeTest(unittest.TestCase):
@@ -15,7 +15,7 @@ class CompositeTest(unittest.TestCase):
         colour = 0xF
 
         # Act
-        level = levels.COMPOSITE[colour]
+        level = tms9918.COMPOSITE[colour]
 
         # Assert
         self.assertEqual(level, (1.00, None))
@@ -25,7 +25,7 @@ class CompositeTest(unittest.TestCase):
         colour = 0x7
 
         # Act
-        level = levels.COMPOSITE[colour]
+        level = tms9918.COMPOSITE[colour]
 
         # Assert
         self.assertEqual(level, (0.67, 0.60))
@@ -35,14 +35,14 @@ class CompositeTest(unittest.TestCase):
         colour = 0x0
 
         # Act
-        present = colour in levels.COMPOSITE
+        present = colour in tms9918.COMPOSITE
 
         # Assert
         self.assertFalse(present)
 
     def test_sync_sits_below_black(self) -> None:
         # Arrange
-        named = levels.COMPOSITE_SPECIAL
+        named = tms9918.COMPOSITE_SPECIAL
 
         # Act
         sync = named["sync"]
@@ -57,7 +57,7 @@ class DifferenceTest(unittest.TestCase):
         colour = 0x4
 
         # Act
-        level = levels.DIFFERENCE[colour]
+        level = tms9918.DIFFERENCE[colour]
 
         # Assert
         self.assertEqual(level, (0.40, 0.4, 1.00))
@@ -67,7 +67,7 @@ class DifferenceTest(unittest.TestCase):
         colour = 0x7
 
         # Act
-        level = levels.DIFFERENCE[colour]
+        level = tms9918.DIFFERENCE[colour]
 
         # Assert
         self.assertEqual(level, (0.73, 0.00, 0.70))
@@ -77,14 +77,14 @@ class DifferenceTest(unittest.TestCase):
         parts = ("tms9928a", "tms9929a")
 
         # Act
-        bursts = [levels.burst(part) for part in parts]
+        bursts = [tms9918.burst(part) for part in parts]
 
         # Assert
         self.assertEqual(bursts, [(0.00, 0.47, 0.1), (0.00, 0.73, 0.2)])
 
     def test_external_video_swings_both_differences_to_the_sync_level(self) -> None:
         # Arrange
-        named = levels.DIFFERENCE_SPECIAL
+        named = tms9918.DIFFERENCE_SPECIAL
 
         # Act
         external = named["external"]
@@ -99,7 +99,7 @@ class DifferenceTest(unittest.TestCase):
         colours = range(1, 16)
 
         # Act
-        missing = [c for c in colours if c not in levels.COMPOSITE or c not in levels.DIFFERENCE]
+        missing = [c for c in colours if c not in tms9918.COMPOSITE or c not in tms9918.DIFFERENCE]
 
         # Assert
         self.assertEqual(missing, [])
@@ -111,7 +111,7 @@ class BurstTest(unittest.TestCase):
         part = "tms9918a"
 
         # Act
-        attempt = lambda: levels.burst(part)  # noqa: E731
+        attempt = lambda: tms9918.burst(part)  # noqa: E731
 
         # Assert
         self.assertRaises(KeyError, attempt)

@@ -11,6 +11,7 @@ from . import slots as slots
 from . import sprites as sprites
 from .core import CPUCLK, EXTERNAL, GROMCLK
 from .errors import UnknownModelError
+from .levels import COMPOSITE, COMPOSITE_SPECIAL, DIFFERENCE, DIFFERENCE_SPECIAL, burst
 from .memory import UNSET_SEED, Vram
 from .models import MODELS, Model
 from .version import VERSION
@@ -27,7 +28,11 @@ def Chip(model: str | None = None, memory: Any = None, **options: Any) -> "core.
 
 
 __all__ = [
+    "COMPOSITE",
+    "COMPOSITE_SPECIAL",
     "CPUCLK",
+    "DIFFERENCE",
+    "DIFFERENCE_SPECIAL",
     "EXTERNAL",
     "GROMCLK",
     "MODELS",
@@ -37,4 +42,5 @@ __all__ = [
     "UnknownModelError",
     "Vram",
     "__version__",
+    "burst",
 ]

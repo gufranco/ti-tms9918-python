@@ -161,7 +161,6 @@
       "document": "dataManual",
       "governs": ["tms9918a", "tms9928a", "tms9929a"],
       "heldBy": [
-        "conformance/hardware.test.py::PortTest.test_the_flags_and_enables_sit_where_the_manual_puts_them",
         "conformance/display.test.py::ColourTest.test_blanking_shows_the_border_colour_where_a_pattern_would_be"
       ]
     },
@@ -235,7 +234,6 @@
       "document": "dataManual",
       "governs": ["tms9918a", "tms9928a", "tms9929a"],
       "heldBy": [
-        "conformance/hardware.test.py::PortTest.test_the_flags_and_enables_sit_where_the_manual_puts_them",
         "conformance/display.test.py::SpriteTest.test_two_sprites_meeting_set_the_flag_a_status_read_clears",
         "conformance/display.test.py::SpriteTest.test_a_reset_clears_the_coincidence_flag"
       ]
@@ -260,7 +258,6 @@
       "document": "dataManual",
       "governs": ["tms9918a", "tms9928a", "tms9929a"],
       "heldBy": [
-        "conformance/display.test.py::SpriteTest.test_the_sprite_constants_are_the_ones_printed",
         "conformance/display.test.py::SpriteTest.test_only_the_printed_number_of_sprites_show_on_a_line"
       ]
     },
@@ -369,7 +366,6 @@
       "document": "dataManual",
       "governs": ["tms9918a", "tms9928a", "tms9929a"],
       "heldBy": [
-        "conformance/display.test.py::SpriteTest.test_the_sprite_constants_are_the_ones_printed",
         "conformance/display.test.py::SpriteTest.test_the_early_clock_bit_moves_a_sprite_left_by_the_printed_dots"
       ]
     },
@@ -380,7 +376,6 @@
       "document": "dataManual",
       "governs": ["tms9918a", "tms9928a", "tms9929a"],
       "heldBy": [
-        "conformance/display.test.py::SpriteTest.test_the_sprite_constants_are_the_ones_printed",
         "conformance/display.test.py::SpriteTest.test_no_plane_after_the_terminator_is_shown"
       ]
     },
@@ -451,7 +446,6 @@
       "document": "dataManual",
       "governs": ["tms9918a", "tms9928a", "tms9929a"],
       "heldBy": [
-        "conformance/hardware.test.py::PortTest.test_the_flags_and_enables_sit_where_the_manual_puts_them",
         "conformance/display.test.py::ColourTest.test_a_transparent_backdrop_is_black_or_the_external_video"
       ]
     },

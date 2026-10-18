@@ -42,10 +42,6 @@ def width(mode: str) -> int:
     return TEXT_WIDTH if is_text(mode) else PATTERN_WIDTH
 
 
-def cells(mode: str) -> int:
-    return TEXT_COLUMNS if is_text(mode) else PATTERN_COLUMNS
-
-
 def _bits(byte: int, one: int, zero: int, count: int) -> tuple[int, ...]:
     return tuple(one if byte & (0x80 >> bit) else zero for bit in range(count))
 

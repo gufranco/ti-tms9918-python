@@ -111,7 +111,7 @@ def _results(images: list[Distinct], frames: int, jobs: int) -> list[dict[str, A
         return list(pool.map(examine, work))
 
 
-def _tally(images: list[Distinct], results: list[dict[str, Any]]) -> dict[str, Any]:
+def tally(images: list[Distinct], results: list[dict[str, Any]]) -> dict[str, Any]:
     modes: collections.Counter[str] = collections.Counter()
     sprites: collections.Counter[str] = collections.Counter()
     registers: dict[str, collections.Counter[str]] = collections.defaultdict(collections.Counter)
@@ -137,7 +137,7 @@ def _tally(images: list[Distinct], results: list[dict[str, Any]]) -> dict[str, A
     }
 
 
-def _culprits(images: list[Distinct], results: list[dict[str, Any]]) -> dict[str, list[str]]:
+def culprits(images: list[Distinct], results: list[dict[str, Any]]) -> dict[str, list[str]]:
     named: dict[str, list[str]] = {name: [] for name in (*PROPERTIES, LOST)}
     for (retail, _, image), found in zip(images, results, strict=True):
         if found["raised"] is not None:
@@ -157,8 +157,8 @@ def take(paths: list[Path], frames: int = FRAMES, jobs: int = JOBS) -> Mapping[s
         "images": len(images),
         "gated": sum(1 for retail, _, _ in images if retail),
         "frames": frames,
-        **_tally(images, results),
-        "culprits": _culprits(images, results),
+        **tally(images, results),
+        "culprits": culprits(images, results),
     }
 
 
@@ -179,16 +179,16 @@ def _options(argv: list[str]) -> tuple[list[Path], int, int] | None:
 
 
 def report(taken: Mapping[str, Any]) -> list[str]:
-    culprits = taken["culprits"]
+    named = taken["culprits"]
     lines = [
         f"{taken['listings']} listings, {taken['images']} distinct images, "
         f"{taken['gated']} retail, {taken['frames']} frames each"
     ]
     for name, count in taken["properties"].items():
         lines.append(f"  {'ok  ' if not count else '   !'}  {name}: {count} broken")
-        lines.extend(f"         {one}" for one in culprits[name])
-    lines.append(f"  observed  {LOST}: {len(culprits[LOST])} images")
-    lines.extend(f"         {one}" for one in culprits[LOST])
+        lines.extend(f"         {one}" for one in named[name])
+    lines.append(f"  observed  {LOST}: {len(named[LOST])} images")
+    lines.extend(f"         {one}" for one in named[LOST])
     return lines
 
 

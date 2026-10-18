@@ -1,78 +1,72 @@
-import copy
 import itertools
-import json
 import sys
 import unittest
 from collections.abc import Callable
 from pathlib import Path
+from typing import Any
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 import tms9918  # noqa: E402
 from conformance.bench import (  # noqa: E402
-    FACTS,
-    HELD,
     MASTER_HZ,
     UNSTATED,
     chip,
+    column,
+    data_write,
     dots_until,
     program,
+    read_setup,
+    row,
+    runs,
     value,
+    waits,
+    watched,
+    windows,
 )
-from tms9918 import core, geometry, models, slots  # noqa: E402
-from tms9918.memory import Vram  # noqa: E402
 
 TICKS_PER_MEMORY_CYCLE = 4
-
-WAIT_LIMIT = 1 << 10
 
 FRAME = 0x80
 
 EDGE_TICKS = 240
 
+ACTIVE_LINES = 192
 
-def largest_active_gap(table: tuple[int, ...], active: range) -> int:
-    inside = [one for one in table if one in active]
+DOTS = 342
+
+PAL_LINES = 313
+
+PICTURE_LINE = 100
+
+BORDER_LINE = 200
+
+TRACED_TICKS = 48
+
+TEXT = 0x10
+
+WRITE_COMMANDS = range(0x80)
+
+
+def largest_active_gap(found: list[int], active: range) -> int:
+    inside = [one for one in found if one in active]
     return max(later - earlier for earlier, later in itertools.pairwise(inside))
 
 
-def ticks_to_serve(part: core.Chip) -> int:
-    waited = 0
-    while part.pending is not None and waited < WAIT_LIMIT:
-        part.tick()
-        waited += 1
-    return waited
+def worst_wait(registers: dict[int, int], line: int, ask: Callable[[Any], None]) -> float:
+    return max(waits(registers, line, ask)) * 1e6 / MASTER_HZ
 
 
-def worst_wait(registers: dict[int, int], line: int, ask: Callable[[core.Chip], None]) -> float:
-    part = dots_until(program(chip(), registers), line, 0)
-    longest = 0
-    for _ in range(geometry.DOTS * 2):
-        trial = copy.deepcopy(part)
-        ask(trial)
-        longest = max(longest, ticks_to_serve(trial))
-        part.tick()
-    return longest * 1e6 / MASTER_HZ
-
-
-def read_setup(part: core.Chip) -> None:
-    part.write_control(0x00)
-    part.write_control(0x00)
-
-
-def data_write(part: core.Chip) -> None:
-    part.write_data(0x5A)
-
-
-def frame_flag_after(clear: Callable[[core.Chip], object]) -> int:
-    part = dots_until(chip(), geometry.ACTIVE_LINES, 1)
+def frame_flag_after(clear: Callable[[Any], object]) -> int:
+    part = dots_until(chip(), ACTIVE_LINES, 1)
     clear(part)
-    return part.status & FRAME
+    held: int = part.status & FRAME
+    return held
 
 
-def counters(part: core.Chip) -> tuple[int, int, int, int]:
-    return (part.line, part.dot, part.half, part.divider)
+def traced(part: Any) -> list[tuple[int, int, int]]:
+    return [(part.line, part.dot, part.tick()) for _ in range(TRACED_TICKS)]
 
 
 def edges(model: str) -> tuple[int, int, int]:
@@ -82,81 +76,72 @@ def edges(model: str) -> tuple[int, int, int]:
     part.clock()
     return (
         part.cycles - before,
-        sum(1 for one in found if one & core.CPUCLK),
-        sum(1 for one in found if one & core.GROMCLK),
+        sum(1 for one in found if one & tms9918.CPUCLK),
+        sum(1 for one in found if one & tms9918.GROMCLK),
     )
 
 
+def spacing(found: list[int], pin: int) -> int:
+    pulses = [tick for tick, one in enumerate(found) if one & pin]
+    return pulses[1] - pulses[0]
+
+
+def dividers() -> dict[str, Any]:
+    part = chip("tms9918a")
+    before = part.cycles
+    part.clock()
+    dot = part.cycles - before
+    found = [part.tick() for _ in range(EDGE_TICKS)]
+    pinned = [name for name in tms9918.MODELS if any(edges(name)[1:])]
+    return {
+        "dot": dot,
+        "cpuclk": spacing(found, tms9918.CPUCLK),
+        "gromclk": spacing(found, tms9918.GROMCLK),
+        "pinsOn": pinned,
+    }
+
+
 def lines_per_frame(model: str) -> int:
-    part = dots_until(chip(model), geometry.ACTIVE_LINES, 0)
+    part = dots_until(chip(model), ACTIVE_LINES, 0)
     part.read_status()
     dots = 0
-    while not part.status & FRAME and dots < geometry.DOTS * models.PAL_LINES:
+    while not part.status & FRAME and dots < DOTS * PAL_LINES:
         part.clock()
         dots += 1
-    return (dots + 1) // geometry.DOTS
+    return (dots + 1) // DOTS
 
 
-class DocumentTest(unittest.TestCase):
-    def test_every_fact_names_a_document_the_record_declares(self) -> None:
-        # Arrange
-        declared = set(HELD["documents"])
+def reads_after(second: int) -> bool:
+    part = watched({1: 0x00})
+    part.write_control(0x00)
+    part.write_control(second)
+    part.run_dots(64)
+    return bool(part.memory.reads)
 
-        # Act
-        unnamed = [name for name, fact in FACTS.items() if fact["document"] not in declared]
 
-        # Assert
-        self.assertEqual(unnamed, [])
+def emitted(first: int, second: int) -> list[int]:
+    part = watched({1: 0x00})
+    part.write_control(first)
+    part.write_control(second)
+    part.write_data(0x5A)
+    part.run_dots(64)
+    written: list[int] = part.memory.written
+    return written
 
-    def test_every_fact_names_a_printed_page(self) -> None:
-        # Arrange
-        facts = FACTS
 
-        # Act
-        unpaged = [name for name, fact in facts.items() if "-" not in str(fact.get("page"))]
+def prefetched(stored: int) -> int:
+    part = chip()
+    part.memory.write8(0x1234, stored)
+    part.write_control(0x34)
+    part.write_control(0x12)
+    part.run_dots(64)
+    held: int = part.read_data()
+    return held
 
-        # Assert
-        self.assertEqual(unpaged, [])
 
-    def test_every_entry_governs_parts_the_package_models(self) -> None:
-        # Arrange
-        entries = {**FACTS, **UNSTATED}
-
-        # Act
-        stray = [
-            name
-            for name, entry in entries.items()
-            if not entry.get("governs") or not set(entry["governs"]) <= set(models.MODELS)
-        ]
-
-        # Assert
-        self.assertEqual(stray, [])
-
-    def test_the_record_and_the_document_list_name_the_same_file(self) -> None:
-        # Arrange
-        listed = json.loads((ROOT / "conformance" / "documents.json").read_text())
-
-        # Act
-        digests = {entry["sha256"] for entry in listed["documents"]}
-
-        # Assert
-        self.assertIn(HELD["documents"]["dataManual"]["sha256"], digests)
-
-    def test_every_unstated_value_is_marked_and_says_how_to_settle_it(self) -> None:
-        # Arrange
-        entries = UNSTATED
-
-        # Act
-        loose = [
-            name
-            for name, entry in entries.items()
-            if entry.get("verified") is not False
-            or not entry.get("howToSettleIt")
-            or not entry.get("source")
-        ]
-
-        # Assert
-        self.assertEqual(loose, [])
+def borders(model: str) -> list[int]:
+    found = runs(column(model))
+    return [found[-1], found[1]]
 
 
 class PortTest(unittest.TestCase):
@@ -165,35 +150,26 @@ class PortTest(unittest.TestCase):
         printed = value("addressRegister")["bits"]
 
         # Act
-        held = Vram(fill=0).data
+        held = emitted(0xFF, value("writeSetup") | 0x3F)
 
         # Assert
-        self.assertEqual(len(held), 1 << printed)
+        self.assertEqual(held, [(1 << printed) - 1])
 
     def test_the_write_setup_bit_is_the_one_the_manual_names(self) -> None:
         # Arrange
         printed = value("writeSetup")
 
         # Act
-        held = core.WRITE_SETUP
+        held = [second for second in WRITE_COMMANDS if not reads_after(second)]
 
         # Assert
-        self.assertEqual(held, printed)
-
-    def test_the_flags_and_enables_sit_where_the_manual_puts_them(self) -> None:
-        # Arrange
-        printed = (value("blank"), value("coincidence"), value("externalVideo"))
-
-        # Act
-        held = (core.BLANK, core.COINCIDENCE, core.EXTERNAL_VIDEO)
-
-        # Assert
-        self.assertEqual(held, printed)
+        self.assertEqual(held, [second for second in WRITE_COMMANDS if second & printed])
 
     def test_reset_clears_exactly_the_registers_the_manual_names(self) -> None:
         # Arrange
-        part = tms9918.Chip("tms9918a", Vram(fill=0), seed=7)
-        part.registers[:] = bytes(range(1, 9))
+        part: Any = tms9918.Chip("tms9918a", tms9918.Vram(fill=0), seed=7)
+        part.read_status()
+        program(part, {register: register + 1 for register in range(8)})
 
         # Act
         part.reset()
@@ -210,52 +186,44 @@ class PrintedPortTest(unittest.TestCase):
         top = (1 << printed["bits"]) - 1
         part = chip()
         part.write_control(top & 0xFF)
-        part.write_control(core.WRITE_SETUP | top >> 8)
+        part.write_control(value("writeSetup") | top >> 8)
 
         # Act
-        for byte in (0x11, 0x22):
+        for byte in (0x11, 0x22, 0x33):
             part.write_data(byte)
             part.run_dots(64)
 
         # Assert
         self.assertEqual(
-            (part.memory.read8(top), part.memory.read8(0), part.address),
-            (0x11, 0x22, (top + 2) % (top + 1)),
+            (part.memory.read8(top), part.memory.read8(0), part.memory.read8(1)),
+            (0x11, 0x22, 0x33),
             printed["autoincrements"],
         )
 
     def test_only_a_setup_without_the_printed_write_bits_asks_for_a_read(self) -> None:
         # Arrange
         printed = value("writeSetup")
-        parts = {second: chip() for second in (0x00, printed)}
+        seconds = (0x00, printed)
 
         # Act
-        for second, part in parts.items():
-            part.write_control(0x00)
-            part.write_control(second)
+        asked = {second: reads_after(second) for second in seconds}
 
         # Assert
-        asked = {second: part.pending is not None for second, part in parts.items()}
         self.assertEqual(asked, {0x00: True, printed: False})
 
     def test_a_read_setup_leaves_the_named_byte_ready_for_the_first_read(self) -> None:
         # Arrange
-        part = chip()
-        stored = part.buffer ^ 0xFF
-        part.memory.write8(0x1234, stored)
-        part.write_control(0x34)
-        part.write_control(0x12)
-        part.run_dots(64)
+        stored = (0x5A, 0xA5)
 
         # Act
-        read = part.read_data()
+        read = tuple(prefetched(one) for one in stored)
 
         # Assert
         self.assertEqual(read == stored, value("readSetupPrefetch"))
 
     def test_reading_the_status_clears_the_interrupt(self) -> None:
         # Arrange
-        part = dots_until(program(chip(), {1: core.INTERRUPT_ENABLE}), geometry.ACTIVE_LINES, 1)
+        part = dots_until(program(chip(), {1: 0x20}), ACTIVE_LINES, 1)
         before = part.interrupt
 
         # Act
@@ -266,17 +234,17 @@ class PrintedPortTest(unittest.TestCase):
 
     def test_reset_sets_the_counters_to_one_known_state_whatever_they_held(self) -> None:
         # Arrange
-        parts = [tms9918.Chip("tms9918a", Vram(fill=0), seed=seed) for seed in (1, 2)]
+        parts = [tms9918.Chip("tms9918a", tms9918.Vram(fill=0), seed=seed) for seed in (1, 2)]
 
         # Act
-        held = [counters(part.reset()) for part in parts]
+        held = [traced(part.reset()) for part in parts]
 
         # Assert
         self.assertEqual(held[0], held[1], value("reset")["setsCounters"])
 
     def test_the_frame_flag_rises_as_the_last_active_line_ends(self) -> None:
         # Arrange
-        part = dots_until(chip(), geometry.ACTIVE_LINES - 1, geometry.DOTS - 1)
+        part = dots_until(chip(), ACTIVE_LINES - 1, DOTS - 1)
         before = part.status & FRAME
 
         # Act
@@ -287,7 +255,10 @@ class PrintedPortTest(unittest.TestCase):
 
     def test_a_status_read_and_a_reset_each_clear_the_frame_flag(self) -> None:
         # Arrange
-        ways = {"read": core.Chip.read_status, "reset": core.Chip.reset}
+        ways: dict[str, Callable[[Any], object]] = {
+            "read": lambda part: part.read_status(),
+            "reset": lambda part: part.reset(),
+        }
 
         # Act
         held = {name: frame_flag_after(way) for name, way in ways.items()}
@@ -303,16 +274,9 @@ class TimingTest(unittest.TestCase):
 
         # Act
         held = {
-            "pattern": [count for _, count in geometry.PATTERN_COUNTS],
-            "text": [count for _, count in geometry.TEXT_COUNTS],
-            "vertical": [
-                geometry.ACTIVE_LINES,
-                models.NTSC_BOTTOM_BORDER,
-                geometry.BOTTOM_BLANKING,
-                geometry.VERTICAL_SYNC,
-                geometry.TOP_BLANKING,
-                models.NTSC_TOP_BORDER,
-            ],
+            "pattern": runs(row({}, 0)),
+            "text": runs(row({1: TEXT}, 0)),
+            "vertical": runs(column("tms9918a")),
         }
 
         # Assert
@@ -323,7 +287,7 @@ class TimingTest(unittest.TestCase):
         printed = value("frameLines")
 
         # Act
-        held = {name: model.lines for name, model in models.MODELS.items()}
+        held = {name: model.lines for name, model in tms9918.MODELS.items()}
 
         # Assert
         self.assertEqual(held, printed)
@@ -345,12 +309,7 @@ class TimingTest(unittest.TestCase):
         printed = value("dividers")
 
         # Act
-        held = {
-            "dot": 2,
-            "cpuclk": core.CPUCLK_DIVIDER,
-            "gromclk": core.GROMCLK_DIVIDER,
-            "pinsOn": [name for name, model in models.MODELS.items() if model.clock_pins],
-        }
+        held = dividers()
 
         # Assert
         self.assertEqual(held, printed)
@@ -363,11 +322,11 @@ class TimingTest(unittest.TestCase):
                 EDGE_TICKS // printed["cpuclk"] if name in printed["pinsOn"] else 0,
                 EDGE_TICKS // printed["gromclk"] if name in printed["pinsOn"] else 0,
             )
-            for name in models.MODELS
+            for name in tms9918.MODELS
         }
 
         # Act
-        held = {name: edges(name) for name in models.MODELS}
+        held = {name: edges(name) for name in tms9918.MODELS}
 
         # Assert
         self.assertEqual(held, {name: (printed["dot"], *counts) for name, counts in pinned.items()})
@@ -384,10 +343,12 @@ class TimingTest(unittest.TestCase):
             "text": range(12, 492),
             "multicolor": range(0, 512),
         }
+        modes = {"graphics": 0x40, "text": 0x50, "multicolor": 0x48}
 
         # Act
         held = {
-            mode: largest_active_gap(slots.TABLES[mode], active[mode]) // TICKS_PER_MEMORY_CYCLE
+            mode: largest_active_gap(windows({1: modes[mode]}, PICTURE_LINE), active[mode])
+            // TICKS_PER_MEMORY_CYCLE
             for mode in printed
         }
 
@@ -409,7 +370,7 @@ class TimingTest(unittest.TestCase):
         recorded = UNSTATED["accessLead"]["value"]
 
         # Act
-        held = slots.LEAD
+        held = min(waits({1: 0x40}, PICTURE_LINE, data_write))
 
         # Assert
         self.assertEqual(held, recorded)
@@ -419,7 +380,7 @@ class TimingTest(unittest.TestCase):
         recorded = UNSTATED["palBorders"]["value"]
 
         # Act
-        held = [models.PAL_TOP_BORDER, models.PAL_BOTTOM_BORDER]
+        held = borders("tms9929a")
 
         # Assert
         self.assertEqual(held, recorded)
@@ -432,31 +393,35 @@ class PrintedAccessTest(unittest.TestCase):
         modes = {"graphics": 0x40, "text": 0x50, "multicolor": 0x48, "blanked": 0x00}
 
         # Act
-        waits = {name: worst_wait({1: bits}, 100, data_write) for name, bits in modes.items()}
+        found = {
+            name: worst_wait({1: bits}, PICTURE_LINE, data_write) for name, bits in modes.items()
+        }
 
         # Assert
-        self.assertEqual([name for name, wait in waits.items() if wait > printed], [])
+        self.assertEqual([name for name, wait in found.items() if wait > printed], [])
 
     def test_a_setup_with_the_display_blanked_is_served_in_the_printed_time(self) -> None:
         # Arrange
         printed = value("accessTime")["afterSetupMicroseconds"]
 
         # Act
-        wait = worst_wait({1: 0x00}, 100, read_setup)
+        wait = worst_wait({1: 0x00}, PICTURE_LINE, read_setup)
 
         # Assert
         self.assertEqual(round(wait), printed)
 
     def test_a_blanked_access_waits_as_in_the_border_whatever_the_mode(self) -> None:
         # Arrange
-        border = worst_wait({1: 0x40}, 200, data_write)
+        border = worst_wait({1: 0x40}, BORDER_LINE, data_write)
         modes = {"graphics": 0x00, "text": 0x10, "multicolor": 0x08}
 
         # Act
-        waits = {name: worst_wait({1: bits}, 100, data_write) for name, bits in modes.items()}
+        found = {
+            name: worst_wait({1: bits}, PICTURE_LINE, data_write) for name, bits in modes.items()
+        }
 
         # Assert
-        self.assertEqual(waits, dict.fromkeys(modes, border), value("blankedAccess"))
+        self.assertEqual(found, dict.fromkeys(modes, border), value("blankedAccess"))
 
     def test_sixteen_printed_memory_cycles_span_the_gap_between_graphics_windows(
         self,
@@ -465,7 +430,8 @@ class PrintedAccessTest(unittest.TestCase):
         printed = value("graphicsWindows") * value("memoryCycle")
 
         # Act
-        gap = largest_active_gap(slots.TABLES["graphics"], range(0, 512)) * 1e9 / MASTER_HZ
+        found = largest_active_gap(windows({1: 0x40}, PICTURE_LINE), range(0, 512))
+        gap = found * 1e9 / MASTER_HZ
 
         # Assert
         self.assertAlmostEqual(gap, printed, delta=value("graphicsWindows"))

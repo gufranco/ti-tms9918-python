@@ -7,13 +7,21 @@ sys.path.insert(0, str(ROOT))
 import unittest  # noqa: E402
 
 import tms9918  # noqa: E402
-from tms9918 import version  # noqa: E402
+
+VERSION_FILE = ROOT / "tms9918" / "version.py"
+
+
+def stamped() -> str:
+    line = next(
+        one for one in VERSION_FILE.read_text().splitlines() if one.startswith("VERSION = ")
+    )
+    return line.split('"')[1]
 
 
 class VersionTest(unittest.TestCase):
     def test_the_version_is_three_numbers(self) -> None:
         # Arrange
-        held = version.VERSION
+        held = tms9918.__version__
 
         # Act
         parts = held.split(".")
@@ -24,7 +32,7 @@ class VersionTest(unittest.TestCase):
 
     def test_the_package_reports_the_same_version(self) -> None:
         # Arrange
-        held = version.VERSION
+        held = stamped()
 
         # Act
         reported = tms9918.__version__
@@ -98,7 +106,7 @@ class ReleaseWiringTest(unittest.TestCase):
         ]
 
         # Assert
-        self.assertEqual(cited, [version.VERSION])
+        self.assertEqual(cited, [tms9918.__version__])
 
 
 if __name__ == "__main__":

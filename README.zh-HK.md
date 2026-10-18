@@ -8,7 +8,7 @@
 [![Release](https://img.shields.io/github/v/release/gufranco/ti-tms9918-python)](https://github.com/gufranco/ti-tms9918-python/releases)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-**348** 個不同的 SG-1000 映像檔各啟動 **600** 幀，其中 **203** 個零售版映像檔的屬性失敗為 **0**，在手冊中找到 **64** 處引文，**3** 款晶片，**699** 個測試，**100%** 語句和分支覆蓋率，沒有依賴套件
+**348** 個不同的 SG-1000 映像檔各啟動 **600** 幀，其中 **203** 個零售版映像檔的屬性失敗為 **0**，在手冊中找到 **64** 處引文，**3** 款晶片，**711** 個測試，**100%** 語句和分支覆蓋率，沒有依賴套件
 
 ```python
 import tms9918
@@ -117,17 +117,18 @@ python3 tms9918/doctor.py
 | `tms9918.UnknownModelError` | 型號名稱缺失或未知時拋出。訊息會列出可接受的名稱 |
 | `tms9918.CPUCLK`、`tms9918.GROMCLK` | `tick()` 返回值中標示各時鐘針腳脈衝的位元。CPUCLK 每 3 個節拍產生一次脈衝，GROMCLK 每 24 個節拍一次 |
 | `tms9918.EXTERNAL` | 外部視像透出之處的 `colour` 值 |
-| `tms9918.levels` | `COMPOSITE` 和 `DIFFERENCE`，即 Table 2-3 為每種顏色列出的訊號電平，以及 `burst(model)` |
+| `tms9918.COMPOSITE`、`tms9918.DIFFERENCE` | Table 2-3 為每種顏色列出的訊號電平 |
+| `tms9918.COMPOSITE_SPECIAL`、`tms9918.DIFFERENCE_SPECIAL` | Table 2-3 為黑電平、同步、色同步訊號和外部視像列出的電平。`COMPOSITE_SPECIAL` 含 `black`、`burst` 和 `sync`，`DIFFERENCE_SPECIAL` 含 `black`、`sync` 和 `external` |
+| `tms9918.burst(model)` | `tms9928a` 或 `tms9929a` 兩路色差輸出上的色同步訊號 |
 | `tms9918.__version__` | 已安裝的版本 |
 
 ```python
 import tms9918
-from tms9918 import levels
 
 for name, model in tms9918.MODELS.items():
     print(name, model.aliases, model.lines, model.output, model.clock_pins)
 
-print(levels.COMPOSITE[0xF], levels.DIFFERENCE[0x4], levels.burst("tms9929a"))
+print(tms9918.COMPOSITE[0xF], tms9918.DIFFERENCE[0x4], tms9918.burst("tms9929a"))
 
 try:
     tms9918.Chip("tms9938")

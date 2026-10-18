@@ -58,7 +58,7 @@ class VersionTest(unittest.TestCase):
         beside = ROOT / "tms9918" / "version.py"
 
         # Act
-        found = doctor._version(beside)
+        found = doctor.installed_version(beside)
 
         # Assert
         self.assertEqual(found, doctor.VERSION)
@@ -68,7 +68,7 @@ class VersionTest(unittest.TestCase):
         path = folder_with("version.py", "RELEASE = 1\n")
 
         # Act
-        found = doctor._version(path)
+        found = doctor.installed_version(path)
 
         # Assert
         self.assertEqual(found, "unknown")
@@ -96,7 +96,7 @@ class ReachableTest(unittest.TestCase):
         path: list[str] = []
 
         # Act
-        added = doctor._reachable(Path("/somewhere"), path)
+        added = doctor.reachable(Path("/somewhere"), path)
 
         # Assert
         self.assertEqual((added, path), (True, ["/somewhere"]))
@@ -106,7 +106,7 @@ class ReachableTest(unittest.TestCase):
         path = ["/somewhere"]
 
         # Act
-        added = doctor._reachable(Path("/somewhere"), path)
+        added = doctor.reachable(Path("/somewhere"), path)
 
         # Assert
         self.assertEqual((added, path), (False, ["/somewhere"]))
@@ -147,7 +147,7 @@ class FindingTest(unittest.TestCase):
 class DrivingTest(unittest.TestCase):
     def test_the_package_imports(self) -> None:
         # Arrange
-        check = doctor._package
+        check = doctor.check_package
 
         # Act
         found = check()
@@ -157,7 +157,7 @@ class DrivingTest(unittest.TestCase):
 
     def test_every_model_builds(self) -> None:
         # Arrange
-        check = doctor._building
+        check = doctor.check_building
 
         # Act
         found = check()
@@ -167,7 +167,7 @@ class DrivingTest(unittest.TestCase):
 
     def test_a_frame_is_342_dots_by_313_lines(self) -> None:
         # Arrange
-        check = doctor._framing
+        check = doctor.check_framing
 
         # Act
         found = check()
@@ -177,7 +177,7 @@ class DrivingTest(unittest.TestCase):
 
     def test_a_write_lands_inside_the_bound(self) -> None:
         # Arrange
-        check = doctor._accessing
+        check = doctor.check_accessing
 
         # Act
         found = check()
@@ -187,7 +187,7 @@ class DrivingTest(unittest.TestCase):
 
     def test_a_cell_reaches_the_screen(self) -> None:
         # Arrange
-        check = doctor._rendering
+        check = doctor.check_rendering
 
         # Act
         found = check()
@@ -202,7 +202,7 @@ class RefusingTest(unittest.TestCase):
         load = broken
 
         # Act
-        found = doctor._package(load)
+        found = doctor.check_package(load)
 
         # Assert
         self.assertEqual((found.ok, found.detail), (False, "ValueError: this build refuses"))
@@ -210,10 +210,10 @@ class RefusingTest(unittest.TestCase):
     def test_each_driving_check_reports_what_it_threw(self) -> None:
         # Arrange
         checks = (
-            doctor._building,
-            doctor._framing,
-            doctor._accessing,
-            doctor._rendering,
+            doctor.check_building,
+            doctor.check_framing,
+            doctor.check_accessing,
+            doctor.check_rendering,
         )
 
         # Act
@@ -230,7 +230,7 @@ class RefusingTest(unittest.TestCase):
         stalled = lambda _model: Stalled()  # noqa: E731
 
         # Act
-        found = doctor._framing(stalled)
+        found = doctor.check_framing(stalled)
 
         # Assert
         self.assertEqual((found.ok, "dots, 89604 expected" in found.detail), (False, True))
@@ -240,7 +240,7 @@ class RefusingTest(unittest.TestCase):
         stalled = lambda _model: Stalled()  # noqa: E731
 
         # Act
-        found = doctor._accessing(stalled)
+        found = doctor.check_accessing(stalled)
 
         # Assert
         self.assertFalse(found.ok)
@@ -250,7 +250,7 @@ class RefusingTest(unittest.TestCase):
         stalled = lambda _model: Stalled()  # noqa: E731
 
         # Act
-        found = doctor._rendering(stalled)
+        found = doctor.check_rendering(stalled)
 
         # Assert
         self.assertEqual((found.ok, found.detail.endswith("[0, 0]")), (False, True))
@@ -262,7 +262,7 @@ class ManualTest(unittest.TestCase):
         nowhere = Path(tempfile.mkdtemp())
 
         # Act
-        found = doctor._manual(held=nowhere)
+        found = doctor.check_manual(held=nowhere)
 
         # Assert
         self.assertEqual((found.ok, found.detail.startswith("not here")), (True, True))
@@ -275,7 +275,7 @@ class ManualTest(unittest.TestCase):
         (held / entry["file"]).write_bytes(b"not the scan")
 
         # Act
-        found = doctor._manual(held=held)
+        found = doctor.check_manual(held=held)
 
         # Assert
         self.assertEqual((found.ok, found.detail.endswith("is a different file")), (False, True))
@@ -285,7 +285,7 @@ class ManualTest(unittest.TestCase):
         manifest = folder_with("documents.json", "{")
 
         # Act
-        found = doctor._manual(manifest=manifest)
+        found = doctor.check_manual(manifest=manifest)
 
         # Assert
         self.assertEqual((found.ok, found.detail.startswith("JSONDecodeError")), (False, True))
@@ -297,7 +297,7 @@ class CorpusTest(unittest.TestCase):
         held = json.loads(doctor.CORPUS.read_text())
 
         # Act
-        found = doctor._corpus()
+        found = doctor.check_corpus()
 
         # Assert
         self.assertEqual((found.ok, found.detail), (True, f"{held['images']} images behind it"))
@@ -307,7 +307,7 @@ class CorpusTest(unittest.TestCase):
         where = Path(tempfile.mkdtemp()) / "corpus.json"
 
         # Act
-        found = doctor._corpus(where)
+        found = doctor.check_corpus(where)
 
         # Assert
         self.assertEqual((found.ok, found.detail.startswith("not here")), (False, True))
@@ -317,7 +317,7 @@ class CorpusTest(unittest.TestCase):
         where = folder_with("corpus.json", '{"images": 0}')
 
         # Act
-        found = doctor._corpus(where)
+        found = doctor.check_corpus(where)
 
         # Assert
         self.assertFalse(found.ok)
@@ -327,7 +327,7 @@ class CorpusTest(unittest.TestCase):
         where = folder_with("corpus.json", "[]")
 
         # Act
-        found = doctor._corpus(where)
+        found = doctor.check_corpus(where)
 
         # Assert
         self.assertEqual((found.ok, found.detail.startswith("TypeError")), (False, True))
@@ -339,7 +339,7 @@ class HarnessTest(unittest.TestCase):
         find = lambda _name: None  # noqa: E731
 
         # Act
-        found = doctor._harness(find)
+        found = doctor.check_harness(find)
 
         # Assert
         self.assertEqual((found.ok, "not checked out" in found.detail), (True, True))
@@ -349,7 +349,7 @@ class HarnessTest(unittest.TestCase):
         find = lambda _name: type("Spec", (), {"origin": "/here/z80/__init__.py"})()  # noqa: E731
 
         # Act
-        found = doctor._harness(find)
+        found = doctor.check_harness(find)
 
         # Assert
         self.assertEqual(found.detail, "zilog-z80-python found at /here/z80/__init__.py")
@@ -359,7 +359,7 @@ class HarnessTest(unittest.TestCase):
         find = broken
 
         # Act
-        found = doctor._harness(find)
+        found = doctor.check_harness(find)
 
         # Assert
         self.assertFalse(found.ok)

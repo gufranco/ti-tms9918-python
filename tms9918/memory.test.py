@@ -7,25 +7,33 @@ sys.path.insert(0, str(ROOT))
 import random  # noqa: E402
 import unittest  # noqa: E402
 
-from tms9918 import memory  # noqa: E402
+import tms9918  # noqa: E402
 
 SEED = 9918
+
+REACHED = 16384
+
+
+def contents(store: tms9918.Vram) -> bytes:
+    return bytes(store.read8(address) for address in range(REACHED))
 
 
 class SizeTest(unittest.TestCase):
     def test_it_holds_the_16384_bytes_a_14_bit_address_reaches(self) -> None:
         # Arrange
-        store = memory.Vram()
+        store = tms9918.Vram(fill=0)
+        for address in range(REACHED):
+            store.write8(address, address ^ address >> 8)
 
         # Act
-        size = len(store.data)
+        held = contents(store)
 
         # Assert
-        self.assertEqual(size, 16384)
+        self.assertEqual(held, bytes((one ^ one >> 8) & 0xFF for one in range(REACHED)))
 
     def test_an_address_wraps_at_14_bits(self) -> None:
         # Arrange
-        store = memory.Vram(fill=0)
+        store = tms9918.Vram(fill=0)
         value = random.Random(SEED).randrange(1, 256)
 
         # Act
@@ -41,47 +49,47 @@ class PowerOnTest(unittest.TestCase):
         expected = bytearray(random.Random(SEED).randbytes(16384))
 
         # Act
-        store = memory.Vram(seed=SEED)
+        store = tms9918.Vram(seed=SEED)
 
         # Assert
-        self.assertEqual(store.data, expected)
+        self.assertEqual(contents(store), expected)
 
     def test_two_seeds_come_up_differently(self) -> None:
         # Arrange
-        first = memory.Vram(seed=SEED)
+        first = tms9918.Vram(seed=SEED)
 
         # Act
-        second = memory.Vram(seed=SEED + 1)
+        second = tms9918.Vram(seed=SEED + 1)
 
         # Assert
-        self.assertNotEqual(first.data, second.data)
+        self.assertNotEqual(contents(first), contents(second))
 
     def test_a_fill_byte_is_everywhere(self) -> None:
         # Arrange
         byte = random.Random(SEED).randrange(256)
 
         # Act
-        store = memory.Vram(fill=byte)
+        store = tms9918.Vram(fill=byte)
 
         # Assert
-        self.assertEqual(set(store.data), {byte})
+        self.assertEqual(set(contents(store)), {byte})
 
     def test_a_fill_of_bytes_is_laid_from_the_start_and_zero_after(self) -> None:
         # Arrange
         image = random.Random(SEED).randbytes(100)
 
         # Act
-        store = memory.Vram(fill=image)
+        store = tms9918.Vram(fill=image)
 
         # Assert
-        self.assertEqual(bytes(store.data[:100]), image)
-        self.assertEqual(set(store.data[100:]), {0})
+        self.assertEqual(contents(store)[:100], image)
+        self.assertEqual(set(contents(store)[100:]), {0})
 
 
 class ByteTest(unittest.TestCase):
     def test_a_written_value_is_read_back_as_a_byte(self) -> None:
         # Arrange
-        store = memory.Vram(fill=0)
+        store = tms9918.Vram(fill=0)
 
         # Act
         store.write8(0x2000, 0x1FF)

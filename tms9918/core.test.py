@@ -6,10 +6,9 @@ sys.path.insert(0, str(ROOT))
 
 import random  # noqa: E402
 import unittest  # noqa: E402
+from typing import Any  # noqa: E402
 
 import tms9918  # noqa: E402
-from tms9918 import core, slots  # noqa: E402
-from tms9918.memory import Vram  # noqa: E402
 
 SEED = 1982
 
@@ -17,21 +16,25 @@ MASTER_HZ = 10_738_635
 
 LINE = 342
 
+SECOND_GRAPHICS_WINDOW = 109
 
-def chip(model: str = "tms9918a", fill: int = 0) -> core.Chip:
-    built = tms9918.Chip(model, Vram(fill=fill))
+TOO_CLOSE = 5
+
+
+def chip(model: str = "tms9918a", fill: int = 0) -> Any:
+    built = tms9918.Chip(model, tms9918.Vram(fill=fill))
     built.reset()
     built.read_status()
     return built
 
 
-def program(part: core.Chip, values: dict[int, int]) -> None:
+def program(part: Any, values: dict[int, int]) -> None:
     for register, value in values.items():
         part.write_control(value)
         part.write_control(0x80 | register)
 
 
-def dots_until(part: core.Chip, line: int, dot: int) -> int:
+def dots_until(part: Any, line: int, dot: int) -> int:
     count = 0
     while (part.line, part.dot) != (line, dot):
         part.clock()
@@ -53,7 +56,13 @@ def ticks_to_land(registers: dict[int, int]) -> int:
     return waited
 
 
-def frame_flag_period(part: core.Chip) -> int:
+def read_twice(part: Any) -> bytes:
+    first = part.read_data()
+    part.run_dots(64)
+    return bytes([first, part.read_data()])
+
+
+def frame_flag_period(part: Any) -> int:
     dots_until(part, 192, 0)
     part.read_status()
     part.clock()
@@ -102,8 +111,8 @@ class ClockPinTest(unittest.TestCase):
         part = chip(model)
         edges = [part.tick() for _ in range(LINE * 262 * 2)]
         return (
-            sum(1 for one in edges if one & core.CPUCLK),
-            sum(1 for one in edges if one & core.GROMCLK),
+            sum(1 for one in edges if one & tms9918.CPUCLK),
+            sum(1 for one in edges if one & tms9918.GROMCLK),
         )
 
     def test_cpuclk_and_gromclk_divide_the_master_by_3_and_24(self) -> None:
@@ -153,17 +162,18 @@ class ControlPortTest(unittest.TestCase):
     def test_a_read_setup_prefetches_the_byte_it_names(self) -> None:
         # Arrange
         part = chip()
-        value = random.Random(SEED).randrange(256)
-        part.memory.write8(0x1234, value)
+        values = random.Random(SEED).randbytes(2)
+        part.memory.write8(0x1234, values[0])
+        part.memory.write8(0x1235, values[1])
         part.write_control(0x34)
         part.write_control(0x12)
         part.run_dots(64)
 
         # Act
-        read = part.read_data()
+        read = read_twice(part)
 
         # Assert
-        self.assertEqual((read, part.address), (value, 0x1236))
+        self.assertEqual(read, values)
 
     def test_a_write_setup_lands_data_at_its_address(self) -> None:
         # Arrange
@@ -257,16 +267,13 @@ class AccessTest(unittest.TestCase):
         # Arrange
         part = chip()
         program(part, {1: 0x40})
-        windows = [one for one in slots.TABLES["graphics"] if 0 <= one < 512]
-        dots_until(part, 100, 0)
-        while part.dot * 2 + part.half != windows[1] - 5:
-            part.tick()
+        dots_until(part, 100, (SECOND_GRAPHICS_WINDOW - TOO_CLOSE) // 2)
         part.write_control(0x00)
         part.write_control(0x40)
 
         # Act
         part.write_data(0x5A)
-        for _ in range(windows[1] - (windows[1] - 5) + 1):
+        for _ in range(TOO_CLOSE + 1):
             part.tick()
 
         # Assert
@@ -324,7 +331,7 @@ class DisplayTest(unittest.TestCase):
         part.clock()
 
         # Assert
-        self.assertEqual(part.colour, core.EXTERNAL)
+        self.assertEqual(part.colour, tms9918.EXTERNAL)
 
     def test_sync_and_blanking_carry_no_colour(self) -> None:
         # Arrange
@@ -402,7 +409,7 @@ class ModeChangeTest(unittest.TestCase):
 
 
 class SpriteStatusTest(unittest.TestCase):
-    def sprites(self, planes: list[tuple[int, int]]) -> core.Chip:
+    def sprites(self, planes: list[tuple[int, int]]) -> Any:
         part = chip()
         program(part, {1: 0x40, 5: 0x36, 6: 0x07})
         for plane, (y, x) in enumerate(planes):
