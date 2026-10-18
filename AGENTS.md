@@ -87,7 +87,7 @@ never does.
 ## Three machine names are exempt, and only three
 
 The TMS9918A was a catalogue part, so no tracked file names a machine it shipped
-in, and [`conformance/family.test.py`](conformance/family.test.py) holds the
+in, and [`conformance/family_member.py`](conformance/family_member.py) holds the
 list it sweeps for. The SG-1000 and the SC-3000 are named because their library
 is the census's oracle. The MSX is named because openMSX's cited measurements
 were taken on one. Any other mention names the part by its number.
@@ -156,6 +156,9 @@ their reasons live here:
   raises must not throw away the census's results for every other image.
 - The `z80.*` override in mypy: the submodule is checked in its own repository,
   against its own gate.
+- `@unittest\.skipUnless\(CLOCKED,` in the coverage exclusions: this member is
+  not a clocked part, so the family tests that drive a clock are skipped here
+  and their bodies never run.
 
 ## Layout
 
@@ -191,7 +194,9 @@ conformance/
   speed.py          the throughput floor
   package.py        the wheel audit
   source.py         the check that no documentation string remains
-  family.test.py    the family standard, held as tests
+  family_*.test.py  the family standard, held as tests, one topic a file
+  family_member.py  what this member answers to them
+  family_shared.py  what more than one of them reads
 zilog-z80-python/   the processor the census drives, a pinned submodule
 ```
 

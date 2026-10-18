@@ -106,4 +106,5 @@ exclude_also = [
   'if TYPE_CHECKING:',
   '^\s*\.\.\.$',
   ': \.\.\.$',
+  '@unittest\.skipUnless\(CLOCKED,',
 ]
