@@ -89,7 +89,7 @@ enable_error_code = [
 files = ["tms9918", "conformance"]
 
 [[tool.mypy.overrides]]
-module = ["z80.*", "setuptools.*"]
+module = ["z80.*"]
 follow_imports = "skip"
 ignore_missing_imports = true
 
