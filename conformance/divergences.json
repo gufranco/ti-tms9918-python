@@ -1,5 +1,5 @@
 {
-  "note": "Every place two sources part, or one source parts with itself, and which way this package went. The manual is the only manufacturer document, so most entries are the manual disagreeing with itself or an implementation disagreeing with the manual.",
+  "note": "Every place two sources part, or one source parts with itself, and which way this package went. The 1982 manual is the manufacturer document that decides; TI's 1980 preliminary data for the TMS9929A is a second, earlier printing of its colour table. Most entries are the manual disagreeing with itself or an implementation disagreeing with the manual.",
   "authority": {
     "order": [
       "the data manual, read from the page image where its text layer and image differ",
@@ -173,7 +173,7 @@
     {
       "id": "burst-decimal-points",
       "severity": "low",
-      "status": "acknowledged",
+      "status": "closed",
       "topic": "The colour burst R-Y level on the colour-difference parts.",
       "documentSays": {
         "rung": 1,
@@ -181,12 +181,41 @@
         "quote": "The VDP can display the 15 colors shown in Table 2-3.",
         "source": "TMS9918A/TMS9928A/TMS9929A Data Manual, page 2-17, read from the page image"
       },
+      "secondPrinting": {
+        "rung": 1,
+        "reads": "BURST NONE 0.0 .73 .2, typed, with 28A .47 and .10 written beside the R-Y and B-Y values in ink.",
+        "source": "TMS 9929A European Line Format Video Display Processor, Preliminary Data, Texas Instruments, 24 March 1980, page 10, file page 12, the table headed 9928/9929 signal amplitudes as percentage of black-white amplitude swing, read from the page image at 200 dpi"
+      },
       "thisPackageDid": {
         "claim": "Reads them as .47 and .73.",
         "why": "Every other entry in the column is a fraction of the white-black swing, and .47 is the column's no-colour level."
       },
       "packageFollows": "document",
-      "wouldCloseIt": "Another printing of the manual, or the burst measured on a TMS9928A."
+      "settledBy": "TI's 1980 preliminary data types the TMS9929A burst R-Y as .73, with the decimal point. The TMS9928A value .47 appears on the same page only in the ink annotation, also with its decimal point. The same hand corrected both yellows' R-Y from .8 to .57, which the 1982 table prints, so the annotations are the revision the 1982 table was set from. Table 2-3's 47(28A) and 73(29A) are those two values with the point lost in typesetting.",
+      "wouldReopenIt": "A TI printing that gives the burst R-Y as anything other than .47 on the TMS9928A or .73 on the TMS9929A, or a burst measured on either part at another level."
+    },
+    {
+      "id": "external-video-level",
+      "severity": "low",
+      "status": "acknowledged",
+      "topic": "The colour-difference level that signals external video.",
+      "documentSays": {
+        "rung": 1,
+        "claim": "Table 2-3 prints -.46 for external video on both R-Y and B-Y.",
+        "quote": "The VDP can display the 15 colors shown in Table 2-3.",
+        "source": "TMS9918A/TMS9928A/TMS9929A Data Manual, page 2-17, read from the page image"
+      },
+      "secondPrinting": {
+        "rung": 1,
+        "reads": "EXT.VIDEO NONE 0.0 -.46 -.46, typed, with each -.46 struck through and -.47 written beside it in ink.",
+        "source": "TMS 9929A European Line Format Video Display Processor, Preliminary Data, Texas Instruments, 24 March 1980, page 10, file page 12, read from the page image at 200 dpi"
+      },
+      "thisPackageDid": {
+        "claim": "Uses -.46 on both outputs.",
+        "why": "The 1982 manual is the later printing and prints -.46. The 1980 document's introduction, on its page 1, puts this level at the sync level of the luminance swing, which Table 2-3 gives as -.46, so the typed value and the later printing agree against the ink."
+      },
+      "packageFollows": "document",
+      "wouldCloseIt": "Either colour-difference output measured on a TMS9928A or TMS9929A in external video mode, against its sync level on Y."
     },
     {
       "id": "access-lead",

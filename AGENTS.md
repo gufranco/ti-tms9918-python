@@ -64,8 +64,9 @@ colours and sprites.
 **Settled: every bound the manual prints on access time holds over the window
 table.** [`tms9918/slots.test.py`](tms9918/slots.test.py) checks it.
 
-**Not settled: 21 things**, every entry under `notStated` and two
-places the manual contradicts itself, each in
+**Not settled: 21 things**, every entry under `notStated`, one
+place the manual contradicts itself and one place TI's 1980 preliminary data
+parts from it, each in
 [OPEN-QUESTIONS.md](OPEN-QUESTIONS.md) with what would close it. Do not close one
 by argument.
 

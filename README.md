@@ -309,6 +309,7 @@ Each module has a test file beside it, named after it, and each runs on its own 
 ## References
 
 - _TMS9918A/TMS9928A/TMS9929A Video Display Processors Data Manual_, Texas Instruments, November 1982. 105 pages, 6,785,534 bytes, SHA-256 `3991f0c691b83036bbb96d8e60e8d4ed4cfbb5eed9567ad61737570771113450`. It is not redistributable and is not in this repository. `python3 -m conformance.documents` downloads it from https://bitsavers.org/components/ti/TMS9900/TMS9918A_TMS9928A_TMS9929A_Video_Display_Processors_Data_Manual_Nov82.pdf and refuses any other file.
+- _TMS 9929A European Line Format Video Display Processor, Preliminary Data_, Texas Instruments, 24 March 1980. 20 pages, 7,934,967 bytes, SHA-256 `5d80fd454a3c5e5d1fe700ec6bb76ee3f70048577ffdc7da6833394b6f41bc9e`. Its page 10 is an earlier printing of Table 2-3 and settles the colour burst's decimal points. It is not in this repository. `python3 -m conformance.documents` downloads it from https://archive.org/download/tms-9929-a/TMS9929A.pdf and refuses any other file.
 - openMSX, `src/video/VDPAccessSlots.cc` and `src/video/VDP.hh` at commit `99c28389d775b945c57be27df1def0925e28abd8`, https://github.com/openMSX/openMSX, for the access window positions. Facts only; no code is taken.
 - MAME, `src/devices/video/tms9928a.cpp` at commit `dc00cf3517eef30587b33efbf1e1c63ad3531b58`, https://github.com/mamedev/mame, for behaviour neither the manual nor openMSX covers, and `hash/sg1000.xml` at the same commit for the cartridge boards. Facts only; no code is taken.
 

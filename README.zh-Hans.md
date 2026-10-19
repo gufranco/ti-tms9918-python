@@ -309,6 +309,7 @@ python3 tms9918/core.test.py
 ## 参考资料
 
 - _TMS9918A/TMS9928A/TMS9929A Video Display Processors Data Manual_，Texas Instruments，1982 年 11 月。105 页，6,785,534 字节，SHA-256 `3991f0c691b83036bbb96d8e60e8d4ed4cfbb5eed9567ad61737570771113450`。该手册不可再分发，也不在本仓库中。`python3 -m conformance.documents` 从 https://bitsavers.org/components/ti/TMS9900/TMS9918A_TMS9928A_TMS9929A_Video_Display_Processors_Data_Manual_Nov82.pdf 下载它，并拒绝任何其他文件。
+- _TMS 9929A European Line Format Video Display Processor, Preliminary Data_，Texas Instruments，1980 年 3 月 24 日。20 页，7,934,967 字节，SHA-256 `5d80fd454a3c5e5d1fe700ec6bb76ee3f70048577ffdc7da6833394b6f41bc9e`。其第 10 页是表 2-3 的较早版本，确定了色同步电平的小数点。它不在本仓库中。`python3 -m conformance.documents` 从 https://archive.org/download/tms-9929-a/TMS9929A.pdf 下载它，并拒绝任何其他文件。
 - openMSX，提交 `99c28389d775b945c57be27df1def0925e28abd8` 中的 `src/video/VDPAccessSlots.cc` 和 `src/video/VDP.hh`，https://github.com/openMSX/openMSX ，用于访问窗口的位置。只取事实，不取任何代码。
 - MAME，提交 `dc00cf3517eef30587b33efbf1e1c63ad3531b58` 中的 `src/devices/video/tms9928a.cpp`，https://github.com/mamedev/mame ，用于手册和 openMSX 都未涵盖的行为；同一提交中的 `hash/sg1000.xml` 用于卡带主板。只取事实，不取任何代码。
 

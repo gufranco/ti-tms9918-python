@@ -4,7 +4,8 @@ What this project does not know for certain, and what it would take to find out.
 
 Everything here is a place where being faithful is still a claim rather than a
 measurement. The authority above everything else is TI's 1982 data manual,
-read twice. Below it sit openMSX and MAME, which are leads rather than
+read twice, with TI's 1980 TMS9929A preliminary data as an earlier printing of
+its colour table. Below them sit openMSX and MAME, which are leads rather than
 authorities, and an SG-1000 library, which says what software reaches but not
 what the chip does with it.
 
@@ -221,10 +222,20 @@ the frame flag. A TMS9929A board settles its border split the same way.
 
 **What would settle it.** Two sprites overlapping only in the dots past the right edge of the active area on hardware, and a status read.
 
+## Where two TI printings part
+
+### The colour-difference level that signals external video
+
+**The 1982 manual says.** Table 2-3 prints -.46 on R-Y and B-Y for external video.
+
+**The 1980 preliminary data says.** Its page 10 types -.46 for both, then strikes each through and writes -.47 beside it in ink.
+
+**This package does.** Uses -.46. The 1982 manual is the later printing, and the 1980 document's own introduction puts this level at the sync level of the luminance swing, which Table 2-3 gives as -.46.
+
+**What would settle it.** Either colour-difference output measured on a TMS9928A or TMS9929A in external video mode, against its sync level on Y.
+
+## What is not in question
+
 ### The colour burst R-Y level on the colour-difference parts
 
-**The manual says.** Table 2-3 prints 47(28A) and 73(29A) with no decimal point, beside .1(28A) and .2(29A) for B-Y.
-
-**This package does.** Reads them as .47 and .73. Every other entry in the column is a fraction of the white-black swing, and .47 is the column's no-colour level.
-
-**What would settle it.** Another printing of the manual, or the burst measured on a TMS9928A.
+Table 2-3 of the 1982 manual prints 47(28A) and 73(29A) with no decimal point. TI's TMS 9929A European Line Format preliminary data of 24 March 1980, page 10, types the TMS9929A burst R-Y as .73, and the TMS9928A value .47 is written beside it in ink. The same hand corrected both yellows' R-Y from .8 to .57, which the 1982 table prints. This package holds .47 and .73. [`conformance/divergences.json`](conformance/divergences.json) records the reading under `burst-decimal-points`.

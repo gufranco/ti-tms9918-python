@@ -22,6 +22,20 @@
       "bytes": 6785534,
       "pages": 105,
       "provenance": "A scan of the printed manual with a text layer from an OCR pass, which garbles tables and some figures. Every quote in hardware.json matches that layer once both are flattened to letters and digits, and every table this package uses was also read from the page image."
+    },
+    {
+      "file": "manufacturer/TMS9929A_European_Line_Format_Preliminary_Data_Mar80.pdf",
+      "rung": 1,
+      "publisher": "Texas Instruments",
+      "title": "TMS 9929A European Line Format Video Display Processor, Preliminary Data",
+      "date": "24 March 1980",
+      "retrievedFrom": "https://archive.org/download/tms-9929-a/TMS9929A.pdf",
+      "covers": ["tms9928a", "tms9929a"],
+      "settles": "The decimal point on the colour burst R-Y level, which the 1982 manual's Table 2-3 drops. Its page 10 types the same table for the colour-difference parts two years earlier.",
+      "sha256": "5d80fd454a3c5e5d1fe700ec6bb76ee3f70048577ffdc7da6833394b6f41bc9e",
+      "bytes": 7934967,
+      "pages": 20,
+      "provenance": "A typed TI preliminary specification prepared by Carlo Herrmann, scanned with no text layer, and corrected by hand in ink before it was scanned. Page 10, file page 12, was read from the page image at 200 dpi. The typed values and the handwritten ones are told apart in divergences.json."
     }
   ]
 }

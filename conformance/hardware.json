@@ -8,7 +8,7 @@
       "MAME, for behaviour the manual leaves unstated and openMSX does not model, counted with openMSX as one lineage because both follow Sean Young's tms9918a.txt",
       "nothing else"
     ],
-    "why": "The data manual is the only manufacturer document and it is a scan read twice, so it decides every fact it prints. It bounds the processor's video memory access time without placing the windows, and it says nothing of what undocumented register combinations do, so those rest on implementations that are leads rather than authorities and are marked verified false. The cartridge library decides which of those unstated corners real software ever reaches, which is what says how much each one matters.",
+    "why": "The data manual is the manufacturer document that decides, and it is a scan read twice, so it decides every fact it prints. TI's 1980 TMS9929A preliminary data is an earlier printing of its colour table, read only where the manual's table lost a decimal point. It bounds the processor's video memory access time without placing the windows, and it says nothing of what undocumented register combinations do, so those rest on implementations that are leads rather than authorities and are marked verified false. The cartridge library decides which of those unstated corners real software ever reaches, which is what says how much each one matters.",
     "comparedAgainst": {
       "runner": "conformance/census.py",
       "what": "Every SG-1000 image in a real library, booted on this model behind the zilog-z80-python processor, with the register writes, modes and sprite configurations it reaches counted."
@@ -467,7 +467,7 @@
       ],
       "page": "2-16",
       "document": "dataManual",
-      "readFrom": "Table 2-3 on page 2-17, file page 26, read from the page image because the text layer prints .SO for .80 and :93 for .93. The values are kept exactly as printed, including R-Y .4 for dark blue and the colour burst R-Y printed 47 and 73 without a decimal point, which levels.py reads as .47 and .73.",
+      "readFrom": "Table 2-3 on page 2-17, file page 26, read from the page image because the text layer prints .SO for .80 and :93 for .93. The values are kept exactly as printed, including R-Y .4 for dark blue. The colour burst R-Y is printed 47 and 73 without a decimal point; TI's 1980 TMS9929A preliminary data, page 10, gives them as .47 and .73, which is what levels.py holds.",
       "governs": ["tms9918a", "tms9928a", "tms9929a"],
       "heldBy": [
         "conformance/display.test.py::ColourTest.test_the_tables_carry_the_printed_number_of_colours_from_black_to_white"
