@@ -93,6 +93,36 @@ list it sweeps for. The SG-1000 and the SC-3000 are named because their library
 is the census's oracle. The MSX is named because openMSX's cited measurements
 were taken on one. Any other mention names the part by its number.
 
+## Test cartridges
+
+[`conformance/testroms.json`](conformance/testroms.json) lists every test
+cartridge that exercises this part, by SHA-256, as FAMILY.md's fifth
+requirement asks.
+
+- **Run: the SG-1000 M2 check program**, from the SG-1000 set's
+  `5 Programs & Tools.zip` under `~/sms-artifacts/htgdb/`. It boots on the census
+  board, writes and reads back every bit of video memory, and prints its own
+  verdict into the name table, which
+  [`conformance/testroms.py`](conformance/testroms.py) reads off every ten frames
+  for 480 frames. It reports `SCRATCH RAM OK` and `VDP V-RAM ALL IC OK`, then
+  runs its colour, sound and input screens. Its one `BAD` line is the extension
+  port: at `01FEh` it writes `55h` and `AAh` to port `DEh` and reads each back,
+  and nothing on the census board answers there. That is the board, not this
+  part, and the record says so.
+- **Hosted: nine Mode 4 tests** from the Master EverDrive set's
+  `5 Tools & Service Test Carts.zip`. They need the successor video chip's
+  Mode 4, line counter and colour RAM, which this part does not have, and wait on
+  `sega-vdp-python`.
+
+```bash
+python3 -m conformance.testroms [--write] <zip, folder or image ...>
+```
+
+With no argument it reads the folders and zips named in `TEST_CARTRIDGES`. With
+none present it says so and exits 2, and CI turns that into a notice.
+[`conformance/testroms.test.py`](conformance/testroms.test.py) replays the
+recorded verdict with no image present.
+
 ## Every gate, in the order to run them
 
 ```bash
@@ -199,6 +229,8 @@ conformance/
   boards.json       which images carry RAM, by whole-file SHA-1, from MAME's software list
   corpus.json       those counts, holding nothing from any cartridge
   corpus.py         replays them
+  testroms.json     every test cartridge that exercises the part, and the verdict of each one run
+  testroms.py       runs the ones you hold on the census board and reads their verdict
   documents.json    the manual, by digest
   documents.py      brings it down and refuses any other file
   hardware.json     TI's manual, fact by fact, and every value it does not print
