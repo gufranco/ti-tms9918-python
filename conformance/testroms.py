@@ -79,14 +79,23 @@ def reported(row: str) -> bool:
     return printable and any(character.isalpha() for character in text) and len(set(text)) > 1
 
 
-def verdict(image: bytes, frames: int, every: int) -> list[str]:
+def ran(image: bytes, frames: int, every: int) -> dict[str, Any]:
     board = harness.Board(image)
     seen: list[str] = []
     for _ in range(frames // every):
         board.run_frames(every)
         shown = [row.strip() for row in screen(board) if reported(row)]
         seen = list(dict.fromkeys([*seen, *shown]))
-    return seen
+    return {"verdict": seen, "lost": board.seen.lost}
+
+
+def expected(image: bytes, where: dict[str, list[int]]) -> dict[str, list[int]]:
+    return {name: [image[at] for at in places] for name, places in where.items()}
+
+
+def measured(image: bytes, one: dict[str, Any]) -> dict[str, Any]:
+    found = ran(image, one["frames"], one["every"])
+    return {**found, "expected": expected(image, one.get("expectedAt", {}))}
 
 
 def options(argv: Sequence[str]) -> tuple[bool, list[Path]] | None:
@@ -104,11 +113,12 @@ def places_from(given: list[Path]) -> list[Path]:
     return [Path(one) for one in named.split(os.pathsep) if one]
 
 
-def judged(one: dict[str, Any], lines: list[str]) -> bool:
-    same = lines == one.get("verdict")
-    print(f"{'ran' if same else 'DIFFERS'} {one['id']}: {len(lines)} lines")
-    for line in lines:
+def judged(one: dict[str, Any], found: dict[str, Any]) -> bool:
+    same = all(found[key] == one.get(key) for key in found)
+    print(f"{'ran' if same else 'DIFFERS'} {one['id']}: {len(found['verdict'])} lines")
+    for line in found["verdict"]:
         print(f"  {line}")
+    print(f"  lost accesses: {found['lost']}, expected from the image: {found['expected']}")
     return same
 
 
@@ -129,9 +139,9 @@ def main(argv: Sequence[str], where: Path | str | None = None) -> int:
         if one["sha256"] not in found:
             print(f"SKIPPED {one['id']}: not on this machine")
             continue
-        lines = verdict(found[one["sha256"]], one["frames"], one["every"])
-        good = judged(one, lines) and good
-        one["verdict"] = lines
+        result = measured(found[one["sha256"]], one)
+        good = judged(one, result) and good
+        one.update(result)
     if write:
         Path(where or RECORD).write_text(json.dumps(held, indent=INDENT) + "\n")
     return 0 if good else 1

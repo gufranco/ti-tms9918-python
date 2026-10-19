@@ -8,7 +8,7 @@
 [![Release](https://img.shields.io/github/v/release/gufranco/ti-tms9918-python)](https://github.com/gufranco/ti-tms9918-python/releases)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-**348** 个不同的 SG-1000 镜像各启动 **600** 帧，**0** 个属性失败（涵盖其中 **203** 个零售版镜像），在手册中定位到 **64** 处引文，**3** 款芯片，**766** 个测试，**100%** 语句和分支覆盖率，无依赖
+**348** 个不同的 SG-1000 镜像各启动 **600** 帧，**0** 个属性失败（涵盖其中 **203** 个零售版镜像），在手册中定位到 **64** 处引文，**3** 款芯片，**769** 个测试，**100%** 语句和分支覆盖率，无依赖
 
 ```python
 import tms9918

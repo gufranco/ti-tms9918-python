@@ -105,7 +105,15 @@ requirement asks.
   verdict into the name table, which
   [`conformance/testroms.py`](conformance/testroms.py) reads off every ten frames
   for 480 frames. It reports `SCRATCH RAM OK` and `VDP V-RAM ALL IC OK`, then
-  runs its colour, sound and input screens. Its one `BAD` line is the extension
+  runs its colour, sound and input screens. Two of its pages are tests with a
+  verdict, and both are taken from its code: the scratch RAM test at `0227h`,
+  and the video memory test at `028Fh`, which fills all 16K with `55h`, `AAh`
+  and `FFh` in Graphics II with the display on, a write every 68 T states, and
+  reads each byte back every 73. The spacing shipped as a factory check,
+  so the census board counting no lost access over it holds the access windows
+  to real hardware. The runner keeps the patterns and the RAM bound read from
+  the image beside the verdict. The colour, sound and input pages are stimulus
+  only, judged by eye or ear, and the record says so. Its one `BAD` line is the extension
   port: at `01FEh` it writes `55h` and `AAh` to port `DEh` and reads each back,
   and nothing on the census board answers there. That is the board, not this
   part, and the record says so.

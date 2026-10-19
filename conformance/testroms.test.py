@@ -54,6 +54,8 @@ def a_record(folder: Path, *images: bytes, verdict: list[str] | None = None) -> 
             "frames": 2,
             "every": 1,
             "verdict": verdict,
+            "lost": 0,
+            "expected": {},
         }
         for index, image in enumerate(images)
     ]
@@ -99,6 +101,30 @@ class RecordedVerdictTest(unittest.TestCase):
 
         # Assert
         self.assertEqual(found, ["COLOR TEST", "SOUND TEST", "I / O   TEST"])
+
+    def test_its_video_memory_test_lost_no_access_at_the_spacing_it_was_shipped_with(
+        self,
+    ) -> None:
+        # Arrange
+        held = testroms.entry("sg-1000-m2-check")
+
+        # Act
+        found = held["lost"]
+
+        # Assert
+        self.assertEqual(found, 0)
+
+    def test_the_patterns_and_bound_it_checks_against_are_the_ones_in_its_code(self) -> None:
+        # Arrange
+        held = testroms.entry("sg-1000-m2-check")
+
+        # Act
+        found = held["expected"]
+
+        # Assert
+        self.assertEqual(
+            found, {"videoMemoryPatterns": [0x55, 0xAA, 0xFF], "ramPatternLimit": [0xF8]}
+        )
 
     def test_an_id_the_record_does_not_hold_is_refused(self) -> None:
         # Arrange
@@ -171,10 +197,22 @@ class RunTest(unittest.TestCase):
         image = A_PROGRAM
 
         # Act
-        found = testroms.verdict(image, frames=2, every=1)
+        found = testroms.ran(image, frames=2, every=1)
 
         # Assert
-        self.assertEqual(found, ["MEMORY OK"])
+        self.assertEqual(found, {"verdict": ["MEMORY OK"], "lost": 0})
+
+
+class ExpectedTest(unittest.TestCase):
+    def test_each_named_value_is_read_from_the_image_at_its_address(self) -> None:
+        # Arrange
+        image = bytes([0x10, 0x20, 0x30])
+
+        # Act
+        found = testroms.expected(image, {"pair": [2, 0]})
+
+        # Assert
+        self.assertEqual(found, {"pair": [0x30, 0x10]})
 
 
 class FindingImagesTest(unittest.TestCase):

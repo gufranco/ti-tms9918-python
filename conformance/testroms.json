@@ -10,7 +10,9 @@
       "heldBy": [
         "conformance/testroms.test.py::RecordedVerdictTest.test_the_check_program_finds_its_ram_and_video_memory_good",
         "conformance/testroms.test.py::RecordedVerdictTest.test_and_reports_bad_only_the_port_for_a_device_the_board_lacks",
-        "conformance/testroms.test.py::RecordedVerdictTest.test_and_runs_through_its_colour_sound_and_input_screens"
+        "conformance/testroms.test.py::RecordedVerdictTest.test_and_runs_through_its_colour_sound_and_input_screens",
+        "conformance/testroms.test.py::RecordedVerdictTest.test_its_video_memory_test_lost_no_access_at_the_spacing_it_was_shipped_with",
+        "conformance/testroms.test.py::RecordedVerdictTest.test_the_patterns_and_bound_it_checks_against_are_the_ones_in_its_code"
       ],
       "frames": 480,
       "every": 10,
@@ -36,7 +38,24 @@
         "SHOTR OFF  SHOTR OFF",
         "HOLD SW  RUN",
         "EXTENSION PORT BAD"
-      ]
+      ],
+      "expectedAt": {
+        "videoMemoryPatterns": [661, 672, 683],
+        "ramPatternLimit": [584]
+      },
+      "pages": {
+        "SCRATCH RAM": "run: at 0227h it writes C and reads it back over C000h to C3FFh for C from 00h in steps of 5 while C is below F8h, and prints OK",
+        "VDP V-RAM": "run: at 028Fh it fills all 16K with 55h, AAh and FFh in Graphics II with the display on, a write every 68 T states, then reads each back every 73 T states; it prints ALL IC OK and the census board counts no lost access",
+        "COLOR TEST": "stimulus only: colour bars labelled with their index, judged by eye; no verdict",
+        "SOUND TEST": "stimulus only: each channel sounded in turn, judged by ear; no verdict",
+        "I / O TEST": "stimulus only: joystick states shown for a person to press; no verdict",
+        "EXTENSION PORT": "reports BAD on this board, which has nothing at port DEh; the 8255 it probes has no member, so this page waits on one"
+      },
+      "lost": 0,
+      "expected": {
+        "videoMemoryPatterns": [85, 170, 255],
+        "ramPatternLimit": [248]
+      }
     },
     {
       "id": "color-palette-64",
