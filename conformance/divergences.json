@@ -173,7 +173,7 @@
     {
       "id": "burst-decimal-points",
       "severity": "low",
-      "status": "closed",
+      "status": "open",
       "topic": "The colour burst R-Y level on the colour-difference parts.",
       "documentSays": {
         "rung": 1,
@@ -188,11 +188,10 @@
       },
       "thisPackageDid": {
         "claim": "Reads them as .47 and .73.",
-        "why": "Every other entry in the column is a fraction of the white-black swing, and .47 is the column's no-colour level."
+        "why": "TI's 1980 preliminary data types the TMS9929A burst R-Y as .73, with the decimal point, which settles that part. The TMS9928A value .47 appears on the same page only as an ink annotation, which is not a TI printing; the package reads it as .47 because every other entry in the column is a fraction of the white-black swing and .47 is the column's no-colour level."
       },
       "packageFollows": "document",
-      "settledBy": "TI's 1980 preliminary data types the TMS9929A burst R-Y as .73, with the decimal point. The TMS9928A value .47 appears on the same page only in the ink annotation, also with its decimal point. The same hand corrected both yellows' R-Y from .8 to .57, which the 1982 table prints, so the annotations are the revision the 1982 table was set from. Table 2-3's 47(28A) and 73(29A) are those two values with the point lost in typesetting.",
-      "wouldReopenIt": "A TI printing that gives the burst R-Y as anything other than .47 on the TMS9928A or .73 on the TMS9929A, or a burst measured on either part at another level."
+      "wouldCloseIt": "A TI printing that types the TMS9928A burst R-Y with its decimal point, or the burst measured on a TMS9928A."
     },
     {
       "id": "external-video-level",

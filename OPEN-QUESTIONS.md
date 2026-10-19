@@ -234,8 +234,12 @@ the frame flag. A TMS9929A board settles its border split the same way.
 
 **What would settle it.** Either colour-difference output measured on a TMS9928A or TMS9929A in external video mode, against its sync level on Y.
 
-## What is not in question
+### The colour burst R-Y level on the TMS9928A
 
-### The colour burst R-Y level on the colour-difference parts
+**The manual says.** Table 2-3 prints 47(28A) and 73(29A) with no decimal point, beside .1(28A) and .2(29A) for B-Y.
 
-Table 2-3 of the 1982 manual prints 47(28A) and 73(29A) with no decimal point. TI's TMS 9929A European Line Format preliminary data of 24 March 1980, page 10, types the TMS9929A burst R-Y as .73, and the TMS9928A value .47 is written beside it in ink. The same hand corrected both yellows' R-Y from .8 to .57, which the 1982 table prints. This package holds .47 and .73. [`conformance/divergences.json`](conformance/divergences.json) records the reading under `burst-decimal-points`.
+**The 1980 preliminary data says.** Its page 10 types the TMS9929A burst R-Y as .73, which settles that part. The TMS9928A value .47 is written beside it only in ink, by the hand whose other corrections the 1982 table prints. An ink note is not a TI printing.
+
+**This package does.** Reads the TMS9928A value as .47. Every other entry in the column is a fraction of the white-black swing, and .47 is the column's no-colour level. [`conformance/divergences.json`](conformance/divergences.json) records it under `burst-decimal-points`.
+
+**What would settle it.** A TI printing that types the TMS9928A burst with its decimal point, or the burst measured on a TMS9928A.
