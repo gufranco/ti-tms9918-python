@@ -129,18 +129,18 @@ standard library module of the same name.
 
 ## Conventions that are not negotiable
 
-| Thing | Rule |
-|:------|:-----|
-| Language | Python only |
-| Comments | None in source or in build files, and a docstring counts as one. Names, small functions, constants and types carry what a comment would have said |
-| Test layout | `<module>.test.py` beside the module it covers |
-| Test shape | Arrange, act, assert, each opened by its bare marker |
-| Coverage | 100% statements and branches, enforced |
-| Types | `mypy` at strict, plus every optional error class |
-| Package manager for tooling | pnpm, never npm |
-| Commits | Conventional Commits, subject at most 50 characters |
-| Documents | Read, quoted and pinned by digest. Never committed |
-| Cartridges | Never committed, in any form, for any reason |
+| Thing                       | Rule                                                                                                                                              |
+| :-------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Language                    | Python only                                                                                                                                       |
+| Comments                    | None in source or in build files, and a docstring counts as one. Names, small functions, constants and types carry what a comment would have said |
+| Test layout                 | `<module>.test.py` beside the module it covers                                                                                                    |
+| Test shape                  | Arrange, act, assert, each opened by its bare marker                                                                                              |
+| Coverage                    | 100% statements and branches, enforced                                                                                                            |
+| Types                       | `mypy` at strict, plus every optional error class                                                                                                 |
+| Package manager for tooling | pnpm, never npm                                                                                                                                   |
+| Commits                     | Conventional Commits, subject at most 50 characters                                                                                               |
+| Documents                   | Read, quoted and pinned by digest. Never committed                                                                                                |
+| Cartridges                  | Never committed, in any form, for any reason                                                                                                      |
 
 The linter's ignores in [`pyproject.toml`](pyproject.toml) carry no comments, so
 their reasons live here:
@@ -159,6 +159,20 @@ their reasons live here:
 - `@unittest\.skipUnless\(CLOCKED,` in the coverage exclusions: this member is
   not a clocked part, so the family tests that drive a clock are skipped here
   and their bodies never run.
+
+The formatter's ignores in [`.prettierignore`](.prettierignore) carry no
+comments either, so their reasons live here:
+
+- `pnpm-lock.yaml` and `package-lock.json`: the package manager writes them, in
+  its own layout, on every install.
+- `node_modules/`, `.venv/`, `venv/`, `build/`, `dist/` and `*.egg-info/`:
+  installed or built, never written by hand.
+- `.coverage`, `coverage.json`, `htmlcov/` and the tool caches: the output of a
+  run, never committed.
+- `docs/`, `specs/`, `.work/` and `.claude/`: local working material, never
+  committed.
+- `zilog-z80-python/`: a submodule. It is a member that formats and checks
+  itself, and the commit pinned here is not this repository's to change.
 
 ## Layout
 

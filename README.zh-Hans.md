@@ -47,10 +47,10 @@ tms9918a 0 3
 
 ## 安装
 
-| 要求 | 版本 |
-|:--|:--|
-| Python | 3.12 或更高 |
-| git | 任意版本，用于获取子模块 |
+| 要求   | 版本                     |
+| :----- | :----------------------- |
+| Python | 3.12 或更高              |
+| git    | 任意版本，用于获取子模块 |
 
 ```bash
 git clone --recurse-submodules https://github.com/gufranco/ti-tms9918-python.git
@@ -72,55 +72,55 @@ python3 tms9918/doctor.py
 
 `tms9918.Chip(model, memory=None, seed=UNSET_SEED)` 构建一颗芯片。`model` 为必填项。`memory` 可以是任何具有 `read8(address)` 和 `write8(address, value)` 的对象，省略时芯片会构建一个内容为乱值的 16 KB `Vram`。`seed` 设置寄存器和该 `Vram` 的上电乱值。
 
-| 型号 | 别名 | 行数 | 帧率 | 视频输出 | CPUCLK 和 GROMCLK 引脚 |
-|:--|:--|:--|:--|:--|:--|
-| `tms9918a` | `9918a` | 262 | 约 60 Hz | 复合视频 | 有 |
-| `tms9928a` | `9928a` | 262 | 约 60 Hz | 亮度和两路色差信号 | 无 |
-| `tms9929a` | `9929a` | 313 | 约 50 Hz | 亮度和两路色差信号 | 无 |
+| 型号       | 别名    | 行数 | 帧率     | 视频输出           | CPUCLK 和 GROMCLK 引脚 |
+| :--------- | :------ | :--- | :------- | :----------------- | :--------------------- |
+| `tms9918a` | `9918a` | 262  | 约 60 Hz | 复合视频           | 有                     |
+| `tms9928a` | `9928a` | 262  | 约 60 Hz | 亮度和两路色差信号 | 无                     |
+| `tms9929a` | `9929a` | 313  | 约 50 Hz | 亮度和两路色差信号 | 无                     |
 
 ### 调用
 
-| 调用 | 作用 |
-|:--|:--|
-| `reset()` | 与 RESET 引脚的作用相同：清除寄存器 0 和 1 以及三个状态标志，并将电子束移到顶部消隐区。返回该芯片 |
-| `write_control(value)` | 向控制端口写一个字节：显存地址的一半，或一次寄存器写入的一半 |
-| `write_data(value)` | 向显存写一个字节。它在下一个访问窗口落入 |
-| `read_data()` | 返回读缓冲区，然后在下一个访问窗口取下一个字节 |
-| `read_status()` | 返回状态字节，并清除 F、5S 和 C 标志 |
-| `tick()` | 一个主时钟周期。在 TMS9918A 上返回 `CPUCLK` 和 `GROMCLK` 的边沿，在其他芯片上返回 0 |
-| `clock()` | 一个点，即两个节拍 |
-| `run_dots(count)` | `count` 个点 |
+| 调用                   | 作用                                                                                              |
+| :--------------------- | :------------------------------------------------------------------------------------------------ |
+| `reset()`              | 与 RESET 引脚的作用相同：清除寄存器 0 和 1 以及三个状态标志，并将电子束移到顶部消隐区。返回该芯片 |
+| `write_control(value)` | 向控制端口写一个字节：显存地址的一半，或一次寄存器写入的一半                                      |
+| `write_data(value)`    | 向显存写一个字节。它在下一个访问窗口落入                                                          |
+| `read_data()`          | 返回读缓冲区，然后在下一个访问窗口取下一个字节                                                    |
+| `read_status()`        | 返回状态字节，并清除 F、5S 和 C 标志                                                              |
+| `tick()`               | 一个主时钟周期。在 TMS9918A 上返回 `CPUCLK` 和 `GROMCLK` 的边沿，在其他芯片上返回 0               |
+| `clock()`              | 一个点，即两个节拍                                                                                |
+| `run_dots(count)`      | `count` 个点                                                                                      |
 
 ### 状态
 
-| 属性 | 含义 |
-|:--|:--|
-| `line` | 行号，从第一个有效显示行开始计数 |
-| `dot` | 点号，从图案模式有效显示区的第一个点开始计数 |
-| `region` | 最后一个点所在的区域：`active`、`border`、`blanking`、`sync` 或 `burst` |
-| `colour` | 最后一个点的颜色索引 0 到 15；外部视频透出处为 `EXTERNAL`，不绘制任何内容处为 `None`。透明背景色显示为黑色，即颜色 1 |
-| `interrupt` | INT 引脚有效时为 True |
-| `status` | 状态字节，读取时不清除任何内容 |
-| `registers` | 八个只写寄存器，类型为 `bytearray` |
-| `mode` | 寄存器所选的显示模式，例如 `graphics1`、`graphics2`、`multicolor`、`text`，或 `text+graphics2` 这样的组合 |
-| `model` | 规范型号名 |
-| `part` | `Model` 记录：`lines`、`output`、`clock_pins`、`aliases`、`summary` |
-| `memory` | 显存对象 |
-| `cycles` | 自芯片构建以来的主时钟节拍数 |
+| 属性        | 含义                                                                                                                 |
+| :---------- | :------------------------------------------------------------------------------------------------------------------- |
+| `line`      | 行号，从第一个有效显示行开始计数                                                                                     |
+| `dot`       | 点号，从图案模式有效显示区的第一个点开始计数                                                                         |
+| `region`    | 最后一个点所在的区域：`active`、`border`、`blanking`、`sync` 或 `burst`                                              |
+| `colour`    | 最后一个点的颜色索引 0 到 15；外部视频透出处为 `EXTERNAL`，不绘制任何内容处为 `None`。透明背景色显示为黑色，即颜色 1 |
+| `interrupt` | INT 引脚有效时为 True                                                                                                |
+| `status`    | 状态字节，读取时不清除任何内容                                                                                       |
+| `registers` | 八个只写寄存器，类型为 `bytearray`                                                                                   |
+| `mode`      | 寄存器所选的显示模式，例如 `graphics1`、`graphics2`、`multicolor`、`text`，或 `text+graphics2` 这样的组合            |
+| `model`     | 规范型号名                                                                                                           |
+| `part`      | `Model` 记录：`lines`、`output`、`clock_pins`、`aliases`、`summary`                                                  |
+| `memory`    | 显存对象                                                                                                             |
+| `cycles`    | 自芯片构建以来的主时钟节拍数                                                                                         |
 
 ### 模块内容
 
-| 名称 | 内容 |
-|:--|:--|
-| `tms9918.MODELS` | 三条 `Model` 记录，以规范名称为键 |
-| `tms9918.Vram(fill=None, seed=UNSET_SEED)` | 16 KB 显存。`fill` 是一个字节值或一个字节串，不提供时内容由 `seed` 生成乱值 |
-| `tms9918.UnknownModelError` | 型号名缺失或未知时抛出。消息中列出可接受的名称 |
-| `tms9918.CPUCLK`、`tms9918.GROMCLK` | `tick()` 返回值中标记各时钟引脚脉冲的位。CPUCLK 每 3 个节拍一个脉冲，GROMCLK 每 24 个节拍一个脉冲 |
-| `tms9918.EXTERNAL` | 外部视频透出处的 `colour` 值 |
-| `tms9918.COMPOSITE`、`tms9918.DIFFERENCE` | Table 2-3 为每种颜色列出的信号电平 |
+| 名称                                                      | 内容                                                                                                                                                               |
+| :-------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tms9918.MODELS`                                          | 三条 `Model` 记录，以规范名称为键                                                                                                                                  |
+| `tms9918.Vram(fill=None, seed=UNSET_SEED)`                | 16 KB 显存。`fill` 是一个字节值或一个字节串，不提供时内容由 `seed` 生成乱值                                                                                        |
+| `tms9918.UnknownModelError`                               | 型号名缺失或未知时抛出。消息中列出可接受的名称                                                                                                                     |
+| `tms9918.CPUCLK`、`tms9918.GROMCLK`                       | `tick()` 返回值中标记各时钟引脚脉冲的位。CPUCLK 每 3 个节拍一个脉冲，GROMCLK 每 24 个节拍一个脉冲                                                                  |
+| `tms9918.EXTERNAL`                                        | 外部视频透出处的 `colour` 值                                                                                                                                       |
+| `tms9918.COMPOSITE`、`tms9918.DIFFERENCE`                 | Table 2-3 为每种颜色列出的信号电平                                                                                                                                 |
 | `tms9918.COMPOSITE_SPECIAL`、`tms9918.DIFFERENCE_SPECIAL` | Table 2-3 为黑电平、同步、色同步信号和外部视频列出的电平。`COMPOSITE_SPECIAL` 含 `black`、`burst` 和 `sync`，`DIFFERENCE_SPECIAL` 含 `black`、`sync` 和 `external` |
-| `tms9918.burst(model)` | `tms9928a` 或 `tms9929a` 两路色差输出上的色同步信号 |
-| `tms9918.__version__` | 已安装的版本 |
+| `tms9918.burst(model)`                                    | `tms9928a` 或 `tms9929a` 两路色差输出上的色同步信号                                                                                                                |
+| `tms9918.__version__`                                     | 已安装的版本                                                                                                                                                       |
 
 ```python
 import tms9918
@@ -264,20 +264,20 @@ python3 -m conformance.census /path/to/sg1000/library --frames 600 --jobs 10
 
 两个属性作为本次运行的门禁检查：模型在任何镜像上都不抛出异常，并且每个零售版镜像都会打开显示。在上一次访问得到服务之前就发出的访问会按镜像计数并列出，但不作为门禁检查，因为已发售的游戏确实会以超过窗口允许的速度写入，而芯片同样会丢失这些写入。改版、自制软件、翻译版、测试版、SC-3000 程序、`.sf` 和 `.sms` 镜像以及 BIOS 镜像从不参与门禁检查。
 
-| 上一次运行的结果 | 数量 |
-|:--|:--|
-| 不同的镜像 | 348 |
-| Graphics II | 279 |
-| Graphics I | 47 |
-| 设置了 Graphics II 位的 Text | 4 |
-| Multicolor | 2 |
-| Text | 1 |
-| 从未打开显示，其中没有零售版 | 25 |
-| 16 x 16 精灵，未放大 | 261 |
-| 8 x 8 精灵 | 66 |
-| 16 x 16 精灵，放大 | 4 |
+| 上一次运行的结果                                                        | 数量             |
+| :---------------------------------------------------------------------- | :--------------- |
+| 不同的镜像                                                              | 348              |
+| Graphics II                                                             | 279              |
+| Graphics I                                                              | 47               |
+| 设置了 Graphics II 位的 Text                                            | 4                |
+| Multicolor                                                              | 2                |
+| Text                                                                    | 1                |
+| 从未打开显示，其中没有零售版                                            | 25               |
+| 16 x 16 精灵，未放大                                                    | 261              |
+| 8 x 8 精灵                                                              | 66               |
+| 16 x 16 精灵，放大                                                      | 4                |
 | 零售版镜像上丢失的访问，全部来自 Champion Golf、Golgo 13 和 Sega-Galaga | 7 个镜像共 47 次 |
-| 其余镜像上丢失的访问，几乎全部来自两款自制软件 | 12,629 |
+| 其余镜像上丢失的访问，几乎全部来自两款自制软件                          | 12,629           |
 
 [`conformance/corpus.json`](conformance/corpus.json) 保存了这些计数，不含任何卡带的内容，因此测试套件可以在没有库的机器上检查它们。
 
@@ -289,13 +289,13 @@ TI 列出的、测试能够触及的每一项事实都与代码对照。[`confor
 
 ## 参与开发
 
-| 需求 | 位置 |
-|:--|:--|
-| 所有门禁检查及其运行顺序 | [CONTRIBUTING.md](CONTRIBUTING.md) |
-| 面向编码代理的同一份内容 | [AGENTS.md](AGENTS.md) |
-| 本仓库与该系列其他仓库共享的标准 | [FAMILY.md](FAMILY.md) |
-| 缺陷报告 | [GitHub Issues](https://github.com/gufranco/ti-tms9918-python/issues) |
-| 安全报告 | [SECURITY.md](SECURITY.md) |
+| 需求                             | 位置                                                                  |
+| :------------------------------- | :-------------------------------------------------------------------- |
+| 所有门禁检查及其运行顺序         | [CONTRIBUTING.md](CONTRIBUTING.md)                                    |
+| 面向编码代理的同一份内容         | [AGENTS.md](AGENTS.md)                                                |
+| 本仓库与该系列其他仓库共享的标准 | [FAMILY.md](FAMILY.md)                                                |
+| 缺陷报告                         | [GitHub Issues](https://github.com/gufranco/ti-tms9918-python/issues) |
+| 安全报告                         | [SECURITY.md](SECURITY.md)                                            |
 
 ```bash
 uvx ruff@0.16.3 format --check .
@@ -308,7 +308,7 @@ python3 tms9918/core.test.py
 
 ## 参考资料
 
-- *TMS9918A/TMS9928A/TMS9929A Video Display Processors Data Manual*，Texas Instruments，1982 年 11 月。105 页，6,785,534 字节，SHA-256 `3991f0c691b83036bbb96d8e60e8d4ed4cfbb5eed9567ad61737570771113450`。该手册不可再分发，也不在本仓库中。`python3 -m conformance.documents` 从 https://bitsavers.org/components/ti/TMS9900/TMS9918A_TMS9928A_TMS9929A_Video_Display_Processors_Data_Manual_Nov82.pdf 下载它，并拒绝任何其他文件。
+- _TMS9918A/TMS9928A/TMS9929A Video Display Processors Data Manual_，Texas Instruments，1982 年 11 月。105 页，6,785,534 字节，SHA-256 `3991f0c691b83036bbb96d8e60e8d4ed4cfbb5eed9567ad61737570771113450`。该手册不可再分发，也不在本仓库中。`python3 -m conformance.documents` 从 https://bitsavers.org/components/ti/TMS9900/TMS9918A_TMS9928A_TMS9929A_Video_Display_Processors_Data_Manual_Nov82.pdf 下载它，并拒绝任何其他文件。
 - openMSX，提交 `99c28389d775b945c57be27df1def0925e28abd8` 中的 `src/video/VDPAccessSlots.cc` 和 `src/video/VDP.hh`，https://github.com/openMSX/openMSX ，用于访问窗口的位置。只取事实，不取任何代码。
 - MAME，提交 `dc00cf3517eef30587b33efbf1e1c63ad3531b58` 中的 `src/devices/video/tms9928a.cpp`，https://github.com/mamedev/mame ，用于手册和 openMSX 都未涵盖的行为；同一提交中的 `hash/sg1000.xml` 用于卡带主板。只取事实，不取任何代码。
 

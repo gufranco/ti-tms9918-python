@@ -47,10 +47,10 @@ A part powers up with scrambled registers and video memory, so the example reset
 
 ## Install
 
-| Requirement | Version |
-|:--|:--|
-| Python | 3.12 or newer |
-| git | Any, to fetch the submodule |
+| Requirement | Version                     |
+| :---------- | :-------------------------- |
+| Python      | 3.12 or newer               |
+| git         | Any, to fetch the submodule |
 
 ```bash
 git clone --recurse-submodules https://github.com/gufranco/ti-tms9918-python.git
@@ -72,55 +72,55 @@ Releases follow [Semantic Versioning](https://semver.org/) and are cut from the 
 
 `tms9918.Chip(model, memory=None, seed=UNSET_SEED)` builds one part. `model` is required. `memory` is any object with `read8(address)` and `write8(address, value)`, and the part builds a scrambled 16 KB `Vram` when it is left out. `seed` sets the power-on scramble of the registers and of that `Vram`.
 
-| Model | Aliases | Lines | Frame rate | Video output | CPUCLK and GROMCLK pins |
-|:--|:--|:--|:--|:--|:--|
-| `tms9918a` | `9918a` | 262 | About 60 Hz | Composite | Yes |
-| `tms9928a` | `9928a` | 262 | About 60 Hz | Luminance and two colour difference signals | No |
-| `tms9929a` | `9929a` | 313 | About 50 Hz | Luminance and two colour difference signals | No |
+| Model      | Aliases | Lines | Frame rate  | Video output                                | CPUCLK and GROMCLK pins |
+| :--------- | :------ | :---- | :---------- | :------------------------------------------ | :---------------------- |
+| `tms9918a` | `9918a` | 262   | About 60 Hz | Composite                                   | Yes                     |
+| `tms9928a` | `9928a` | 262   | About 60 Hz | Luminance and two colour difference signals | No                      |
+| `tms9929a` | `9929a` | 313   | About 50 Hz | Luminance and two colour difference signals | No                      |
 
 ### Calls
 
-| Call | Effect |
-|:--|:--|
-| `reset()` | What the RESET pin does: clears registers 0 and 1 and the three status flags, and moves the beam to the top blanking. Returns the part |
-| `write_control(value)` | One byte to the control port: half of a video memory address, or half of a register write |
-| `write_data(value)` | One byte to video memory. It lands at the next access window |
-| `read_data()` | Returns the read buffer, then fetches the next byte at the next access window |
-| `read_status()` | Returns the status byte and clears the F, 5S and C flags |
-| `tick()` | One master clock period. Returns the `CPUCLK` and `GROMCLK` edges on the TMS9918A, and 0 on the other parts |
-| `clock()` | One dot, which is two ticks |
-| `run_dots(count)` | `count` dots |
+| Call                   | Effect                                                                                                                                 |
+| :--------------------- | :------------------------------------------------------------------------------------------------------------------------------------- |
+| `reset()`              | What the RESET pin does: clears registers 0 and 1 and the three status flags, and moves the beam to the top blanking. Returns the part |
+| `write_control(value)` | One byte to the control port: half of a video memory address, or half of a register write                                              |
+| `write_data(value)`    | One byte to video memory. It lands at the next access window                                                                           |
+| `read_data()`          | Returns the read buffer, then fetches the next byte at the next access window                                                          |
+| `read_status()`        | Returns the status byte and clears the F, 5S and C flags                                                                               |
+| `tick()`               | One master clock period. Returns the `CPUCLK` and `GROMCLK` edges on the TMS9918A, and 0 on the other parts                            |
+| `clock()`              | One dot, which is two ticks                                                                                                            |
+| `run_dots(count)`      | `count` dots                                                                                                                           |
 
 ### State
 
-| Attribute | Meaning |
-|:--|:--|
-| `line` | Line number, counted from the first active line |
-| `dot` | Dot number, counted from the first dot of a pattern-mode active area |
-| `region` | `active`, `border`, `blanking`, `sync` or `burst` for the last dot |
-| `colour` | Colour index 0 to 15 of the last dot, `EXTERNAL` where external video shows through, or `None` where nothing is drawn. A transparent backdrop shows black, colour 1 |
-| `interrupt` | True while the INT pin is asserted |
-| `status` | The status byte, read without clearing anything |
-| `registers` | The eight write-only registers as a `bytearray` |
-| `mode` | The display mode the registers select, such as `graphics1`, `graphics2`, `multicolor`, `text` or a combination such as `text+graphics2` |
-| `model` | The canonical model name |
-| `part` | The `Model` record: `lines`, `output`, `clock_pins`, `aliases`, `summary` |
-| `memory` | The video memory object |
-| `cycles` | Master clock ticks since the part was built |
+| Attribute   | Meaning                                                                                                                                                             |
+| :---------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `line`      | Line number, counted from the first active line                                                                                                                     |
+| `dot`       | Dot number, counted from the first dot of a pattern-mode active area                                                                                                |
+| `region`    | `active`, `border`, `blanking`, `sync` or `burst` for the last dot                                                                                                  |
+| `colour`    | Colour index 0 to 15 of the last dot, `EXTERNAL` where external video shows through, or `None` where nothing is drawn. A transparent backdrop shows black, colour 1 |
+| `interrupt` | True while the INT pin is asserted                                                                                                                                  |
+| `status`    | The status byte, read without clearing anything                                                                                                                     |
+| `registers` | The eight write-only registers as a `bytearray`                                                                                                                     |
+| `mode`      | The display mode the registers select, such as `graphics1`, `graphics2`, `multicolor`, `text` or a combination such as `text+graphics2`                             |
+| `model`     | The canonical model name                                                                                                                                            |
+| `part`      | The `Model` record: `lines`, `output`, `clock_pins`, `aliases`, `summary`                                                                                           |
+| `memory`    | The video memory object                                                                                                                                             |
+| `cycles`    | Master clock ticks since the part was built                                                                                                                         |
 
 ### Module contents
 
-| Name | Content |
-|:--|:--|
-| `tms9918.MODELS` | The three `Model` records, keyed by canonical name |
-| `tms9918.Vram(fill=None, seed=UNSET_SEED)` | 16 KB of video memory. `fill` is a byte value or a byte string, and without it the contents are scrambled from `seed` |
-| `tms9918.UnknownModelError` | Raised for a missing or unknown model name. The message lists the names accepted |
-| `tms9918.CPUCLK`, `tms9918.GROMCLK` | The bits in `tick()`'s return value that mark a pulse on each clock pin. CPUCLK pulses every 3 ticks and GROMCLK every 24 |
-| `tms9918.EXTERNAL` | The `colour` value where external video shows through |
-| `tms9918.COMPOSITE`, `tms9918.DIFFERENCE` | The signal levels Table 2-3 prints for each colour |
+| Name                                                      | Content                                                                                                                                                                                                |
+| :-------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tms9918.MODELS`                                          | The three `Model` records, keyed by canonical name                                                                                                                                                     |
+| `tms9918.Vram(fill=None, seed=UNSET_SEED)`                | 16 KB of video memory. `fill` is a byte value or a byte string, and without it the contents are scrambled from `seed`                                                                                  |
+| `tms9918.UnknownModelError`                               | Raised for a missing or unknown model name. The message lists the names accepted                                                                                                                       |
+| `tms9918.CPUCLK`, `tms9918.GROMCLK`                       | The bits in `tick()`'s return value that mark a pulse on each clock pin. CPUCLK pulses every 3 ticks and GROMCLK every 24                                                                              |
+| `tms9918.EXTERNAL`                                        | The `colour` value where external video shows through                                                                                                                                                  |
+| `tms9918.COMPOSITE`, `tms9918.DIFFERENCE`                 | The signal levels Table 2-3 prints for each colour                                                                                                                                                     |
 | `tms9918.COMPOSITE_SPECIAL`, `tms9918.DIFFERENCE_SPECIAL` | The levels Table 2-3 prints for black, sync, the colour burst and external video. `COMPOSITE_SPECIAL` holds `black`, `burst` and `sync`, and `DIFFERENCE_SPECIAL` holds `black`, `sync` and `external` |
-| `tms9918.burst(model)` | The colour burst on the two colour difference outputs of the `tms9928a` or the `tms9929a` |
-| `tms9918.__version__` | The installed version |
+| `tms9918.burst(model)`                                    | The colour burst on the two colour difference outputs of the `tms9928a` or the `tms9929a`                                                                                                              |
+| `tms9918.__version__`                                     | The installed version                                                                                                                                                                                  |
 
 ```python
 import tms9918
@@ -264,20 +264,20 @@ Some cartridges carry their own RAM, among them Othello, The Castle and the Taiw
 
 Two properties gate the run: the model raises no exception on any image, and every retail image turns its display on. Accesses requested before the previous one was served are counted and named per image but gate nothing, because shipped games do write faster than the windows allow and the chip loses those writes too. Hacks, homebrew, translations, betas, SC-3000 programs, `.sf` and `.sms` images and BIOS images never gate.
 
-| Result of the last run | Count |
-|:--|:--|
-| Distinct images | 348 |
-| Graphics II | 279 |
-| Graphics I | 47 |
-| Text with the Graphics II bit set | 4 |
-| Multicolor | 2 |
-| Text | 1 |
-| Never turned the display on, none of them retail | 25 |
-| Sprites 16 by 16, unmagnified | 261 |
-| Sprites 8 by 8 | 66 |
-| Sprites 16 by 16, magnified | 4 |
+| Result of the last run                                                         | Count            |
+| :----------------------------------------------------------------------------- | :--------------- |
+| Distinct images                                                                | 348              |
+| Graphics II                                                                    | 279              |
+| Graphics I                                                                     | 47               |
+| Text with the Graphics II bit set                                              | 4                |
+| Multicolor                                                                     | 2                |
+| Text                                                                           | 1                |
+| Never turned the display on, none of them retail                               | 25               |
+| Sprites 16 by 16, unmagnified                                                  | 261              |
+| Sprites 8 by 8                                                                 | 66               |
+| Sprites 16 by 16, magnified                                                    | 4                |
 | Lost accesses on retail images, all in Champion Golf, Golgo 13 and Sega-Galaga | 47 over 7 images |
-| Lost accesses on the rest, almost all from two homebrew titles | 12,629 |
+| Lost accesses on the rest, almost all from two homebrew titles                 | 12,629           |
 
 [`conformance/corpus.json`](conformance/corpus.json) holds those counts and nothing from any cartridge, so the suite checks them on a machine with no library.
 
@@ -289,13 +289,13 @@ Every value the manual does not print sits under `notStated` in the same file, m
 
 ## Working on it
 
-| Need | Where |
-|:--|:--|
-| Every gate and the order to run them | [CONTRIBUTING.md](CONTRIBUTING.md) |
-| The same material for a coding agent | [AGENTS.md](AGENTS.md) |
-| The standard this repository shares with the rest of the family | [FAMILY.md](FAMILY.md) |
-| Bug reports | [GitHub Issues](https://github.com/gufranco/ti-tms9918-python/issues) |
-| Security reports | [SECURITY.md](SECURITY.md) |
+| Need                                                            | Where                                                                 |
+| :-------------------------------------------------------------- | :-------------------------------------------------------------------- |
+| Every gate and the order to run them                            | [CONTRIBUTING.md](CONTRIBUTING.md)                                    |
+| The same material for a coding agent                            | [AGENTS.md](AGENTS.md)                                                |
+| The standard this repository shares with the rest of the family | [FAMILY.md](FAMILY.md)                                                |
+| Bug reports                                                     | [GitHub Issues](https://github.com/gufranco/ti-tms9918-python/issues) |
+| Security reports                                                | [SECURITY.md](SECURITY.md)                                            |
 
 ```bash
 uvx ruff@0.16.3 format --check .
@@ -308,7 +308,7 @@ Each module has a test file beside it, named after it, and each runs on its own 
 
 ## References
 
-- *TMS9918A/TMS9928A/TMS9929A Video Display Processors Data Manual*, Texas Instruments, November 1982. 105 pages, 6,785,534 bytes, SHA-256 `3991f0c691b83036bbb96d8e60e8d4ed4cfbb5eed9567ad61737570771113450`. It is not redistributable and is not in this repository. `python3 -m conformance.documents` downloads it from https://bitsavers.org/components/ti/TMS9900/TMS9918A_TMS9928A_TMS9929A_Video_Display_Processors_Data_Manual_Nov82.pdf and refuses any other file.
+- _TMS9918A/TMS9928A/TMS9929A Video Display Processors Data Manual_, Texas Instruments, November 1982. 105 pages, 6,785,534 bytes, SHA-256 `3991f0c691b83036bbb96d8e60e8d4ed4cfbb5eed9567ad61737570771113450`. It is not redistributable and is not in this repository. `python3 -m conformance.documents` downloads it from https://bitsavers.org/components/ti/TMS9900/TMS9918A_TMS9928A_TMS9929A_Video_Display_Processors_Data_Manual_Nov82.pdf and refuses any other file.
 - openMSX, `src/video/VDPAccessSlots.cc` and `src/video/VDP.hh` at commit `99c28389d775b945c57be27df1def0925e28abd8`, https://github.com/openMSX/openMSX, for the access window positions. Facts only; no code is taken.
 - MAME, `src/devices/video/tms9928a.cpp` at commit `dc00cf3517eef30587b33efbf1e1c63ad3531b58`, https://github.com/mamedev/mame, for behaviour neither the manual nor openMSX covers, and `hash/sg1000.xml` at the same commit for the cartridge boards. Facts only; no code is taken.
 
