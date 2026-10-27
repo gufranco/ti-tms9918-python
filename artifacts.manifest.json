@@ -1,0 +1,221 @@
+{
+  "externalNote": "Every file this repository reads and may not ship. Each lives under external/, which git and Dropbox both ignore. python3 -m conformance.external reports which are here, which are missing and which are not the file named; SHA-256 alone decides.",
+  "external": {
+    "sg-1000-1-japan-zip": {
+      "required": false,
+      "purpose": "One archive of the SG-1000 library the census boots, kept at the path the pack gives it.",
+      "usedBy": ["conformance/census.py"],
+      "canonical_form": {
+        "container": "zip",
+        "header": "as shipped",
+        "notes": "The archive itself, because the census and the cartridge runner read it as it is; the census names each image inside by its own SHA-256 in conformance/corpus.json."
+      },
+      "accepted": [
+        {
+          "label": "1 Japan",
+          "path": "SG-1000/1 Japan.zip",
+          "common_filename": "1 Japan.zip",
+          "size": 1519618,
+          "crc32": "4f208302",
+          "md5": "cb2a7827d7923675448afdc81a57f3c9",
+          "sha1": "8fcfed290228408d3c5cb8cc43fe0a9b32b4d4a2",
+          "sha256": "c23ef2b9e0ea5d38b32cf172d224c259e71ebb62ba69c113cd046399da3f645f",
+          "preferred": true,
+          "provenance": {
+            "db": "SG-1000 pack",
+            "dat_version": "2022-05-20"
+          }
+        }
+      ]
+    },
+    "sg-1000-2-korea-zip": {
+      "required": false,
+      "purpose": "One archive of the SG-1000 library the census boots, kept at the path the pack gives it.",
+      "usedBy": ["conformance/census.py"],
+      "canonical_form": {
+        "container": "zip",
+        "header": "as shipped",
+        "notes": "The archive itself, because the census and the cartridge runner read it as it is; the census names each image inside by its own SHA-256 in conformance/corpus.json."
+      },
+      "accepted": [
+        {
+          "label": "2 Korea",
+          "path": "SG-1000/2 Korea.zip",
+          "common_filename": "2 Korea.zip",
+          "size": 274372,
+          "crc32": "0a216264",
+          "md5": "3efa82c175621cd584a8742c8ed14eb2",
+          "sha1": "5dc60bd1eac4b7093fdb0a9e8f8331ed667b5a66",
+          "sha256": "c40c350b82433f9e665fff2a017b785f7df3327dcca878cd631a995b9ce7da28",
+          "preferred": true,
+          "provenance": {
+            "db": "SG-1000 pack",
+            "dat_version": "2022-05-20"
+          }
+        }
+      ]
+    },
+    "sg-1000-2-taiwan-zip": {
+      "required": false,
+      "purpose": "One archive of the SG-1000 library the census boots, kept at the path the pack gives it.",
+      "usedBy": ["conformance/census.py"],
+      "canonical_form": {
+        "container": "zip",
+        "header": "as shipped",
+        "notes": "The archive itself, because the census and the cartridge runner read it as it is; the census names each image inside by its own SHA-256 in conformance/corpus.json."
+      },
+      "accepted": [
+        {
+          "label": "2 Taiwan",
+          "path": "SG-1000/2 Taiwan.zip",
+          "common_filename": "2 Taiwan.zip",
+          "size": 1459483,
+          "crc32": "234a09d2",
+          "md5": "47fb313dc859807149c269279135a34b",
+          "sha1": "1796ef40fa3f15431373b7af138d80c3bfa3a141",
+          "sha256": "d9e9f9350ecb62a3d8661aa559b44dce4bd99f29d5dd16415eeb27b35cc9ccf2",
+          "preferred": true,
+          "provenance": {
+            "db": "SG-1000 pack",
+            "dat_version": "2022-05-20"
+          }
+        }
+      ]
+    },
+    "sg-1000-3-other-regions-zip": {
+      "required": false,
+      "purpose": "One archive of the SG-1000 library the census boots, kept at the path the pack gives it.",
+      "usedBy": ["conformance/census.py"],
+      "canonical_form": {
+        "container": "zip",
+        "header": "as shipped",
+        "notes": "The archive itself, because the census and the cartridge runner read it as it is; the census names each image inside by its own SHA-256 in conformance/corpus.json."
+      },
+      "accepted": [
+        {
+          "label": "3 Other Regions",
+          "path": "SG-1000/3 Other Regions.zip",
+          "common_filename": "3 Other Regions.zip",
+          "size": 146221,
+          "crc32": "173bd9e5",
+          "md5": "ecc6e9d30a8973b08c8165fdb5ba05eb",
+          "sha1": "7336694d36fd0d31c1ab611ebc7a93908d280cb6",
+          "sha256": "c981da9c7bc2a799e3c456e602b92b13a447928db72dbf453083078138eb6656",
+          "preferred": true,
+          "provenance": {
+            "db": "SG-1000 pack",
+            "dat_version": "2022-05-20"
+          }
+        }
+      ]
+    },
+    "sg-1000-4-homebrew-zip": {
+      "required": false,
+      "purpose": "One archive of the SG-1000 library the census boots, kept at the path the pack gives it.",
+      "usedBy": ["conformance/census.py"],
+      "canonical_form": {
+        "container": "zip",
+        "header": "as shipped",
+        "notes": "The archive itself, because the census and the cartridge runner read it as it is; the census names each image inside by its own SHA-256 in conformance/corpus.json."
+      },
+      "accepted": [
+        {
+          "label": "4 Homebrew",
+          "path": "SG-1000/4 Homebrew.zip",
+          "common_filename": "4 Homebrew.zip",
+          "size": 298403,
+          "crc32": "52c13728",
+          "md5": "b40099c7864b3fc8ca43af9b411155f4",
+          "sha1": "dce6c0ede9a2e7ce47eafe0114a022b1f949c576",
+          "sha256": "8bd8c8f2a5069c0c9a7b8bb0f8d59f4d39b3625082261747063efe8ca03e4956",
+          "preferred": true,
+          "provenance": {
+            "db": "SG-1000 pack",
+            "dat_version": "2022-05-20"
+          }
+        }
+      ]
+    },
+    "sg-1000-4-palette-hacks-zip": {
+      "required": false,
+      "purpose": "One archive of the SG-1000 library the census boots, kept at the path the pack gives it.",
+      "usedBy": ["conformance/census.py"],
+      "canonical_form": {
+        "container": "zip",
+        "header": "as shipped",
+        "notes": "The archive itself, because the census and the cartridge runner read it as it is; the census names each image inside by its own SHA-256 in conformance/corpus.json."
+      },
+      "accepted": [
+        {
+          "label": "4 Palette Hacks",
+          "path": "SG-1000/4 Palette Hacks.zip",
+          "common_filename": "4 Palette Hacks.zip",
+          "size": 1404058,
+          "crc32": "4bf91c60",
+          "md5": "541ee86cc2867417a11afb3448ded239",
+          "sha1": "af2ae99b005ba6367f14809ab43b010730750717",
+          "sha256": "4372bfa4e7412c4d2e1d53ee2227d734d3386497ae6246fd1b5e127217f848b1",
+          "preferred": true,
+          "provenance": {
+            "db": "SG-1000 pack",
+            "dat_version": "2022-05-20"
+          }
+        }
+      ]
+    },
+    "sg-1000-4-translations-zip": {
+      "required": false,
+      "purpose": "One archive of the SG-1000 library the census boots, kept at the path the pack gives it.",
+      "usedBy": ["conformance/census.py"],
+      "canonical_form": {
+        "container": "zip",
+        "header": "as shipped",
+        "notes": "The archive itself, because the census and the cartridge runner read it as it is; the census names each image inside by its own SHA-256 in conformance/corpus.json."
+      },
+      "accepted": [
+        {
+          "label": "4 Translations",
+          "path": "SG-1000/4 Translations.zip",
+          "common_filename": "4 Translations.zip",
+          "size": 84451,
+          "crc32": "d7bcedca",
+          "md5": "96c40e20ccfea2d57dbb83d478b1cb05",
+          "sha1": "8cf1f91fe17482c58f0d8118156cb1c00c6f68ba",
+          "sha256": "2eb2e3e176d28e6ff4c0fcc94ba6046fe364e8f0b24c181f9c4be8f3aacb0ff8",
+          "preferred": true,
+          "provenance": {
+            "db": "SG-1000 pack",
+            "dat_version": "2022-05-20"
+          }
+        }
+      ]
+    },
+    "sg-1000-5-programs-tools-zip": {
+      "required": false,
+      "purpose": "One archive of the SG-1000 library the census boots, kept at the path the pack gives it.",
+      "usedBy": ["conformance/census.py", "conformance/testroms.py"],
+      "canonical_form": {
+        "container": "zip",
+        "header": "as shipped",
+        "notes": "The archive itself, because the census and the cartridge runner read it as it is; the census names each image inside by its own SHA-256 in conformance/corpus.json."
+      },
+      "accepted": [
+        {
+          "label": "5 Programs & Tools",
+          "path": "SG-1000/5 Programs & Tools.zip",
+          "common_filename": "5 Programs & Tools.zip",
+          "size": 501746,
+          "crc32": "97da872f",
+          "md5": "818a7082f4c547a44df16e10db167a7a",
+          "sha1": "b4ba0022b5945e30bfd068c56602872a1c27c135",
+          "sha256": "f3c68ad3160acb957f3fa5d21b0ec430b71e5d0352184fe2c504dbf89ae36dff",
+          "preferred": true,
+          "provenance": {
+            "db": "SG-1000 pack",
+            "dat_version": "2022-05-20"
+          }
+        }
+      ]
+    }
+  }
+}

@@ -4,7 +4,7 @@
       "id": "sg-1000-m2-check",
       "title": "SG-1000 M2 Check Program (1984)",
       "sha256": "1e2af6adb98f17f228dbd2daf3ae7896318127de308464f8f871a62f25429718",
-      "source": "the SG-1000 set's 5 Programs & Tools.zip under ~/sms-artifacts/htgdb/, member SG-1000 M2 Test Cartridge (Japan).sg",
+      "source": "external/SG-1000/5 Programs & Tools.zip, member SG-1000 M2 Test Cartridge (Japan).sg",
       "exercises": "video memory written and read back through the data port, bit by bit, then a colour screen in Graphics II; on the same board it also checks the processor's RAM, plays each sound channel and reads both joysticks",
       "outcome": "run",
       "heldBy": [
@@ -56,87 +56,6 @@
         "videoMemoryPatterns": [85, 170, 255],
         "ramPatternLimit": [248]
       }
-    },
-    {
-      "id": "color-palette-64",
-      "title": "64 Color Palette Test",
-      "sha256": "7b9058becf83cb01a60f7fcdc57c89db1e8806d00af4ffcd35ba42e8498db79f",
-      "source": "~/sms-artifacts/htgdb/Master EverDrive/5 Tools & Service Test Carts.zip",
-      "exercises": "the 64-colour palette of the successor video chip's Mode 4",
-      "outcome": "hosted",
-      "needs": "sega-vdp-python"
-    },
-    {
-      "id": "color-and-switch-test",
-      "title": "Color & Switch Test (Japan) (En) (Proto)",
-      "sha256": "4c184967c21261f55174d0de28b65dd064fcebbaa3ec779a00c21adabb6372ca",
-      "source": "~/sms-artifacts/htgdb/Master EverDrive/5 Tools & Service Test Carts.zip",
-      "exercises": "Mode 4 colour output",
-      "outcome": "hosted",
-      "needs": "sega-vdp-python"
-    },
-    {
-      "id": "interrupt-test",
-      "title": "Interrupt Test",
-      "sha256": "54f94e61f7690c4bfea36f70d3bf1e0b9f7583ef64c0c49deb571c9b0ffed408",
-      "source": "~/sms-artifacts/htgdb/Master EverDrive/5 Tools & Service Test Carts.zip",
-      "exercises": "the frame and line interrupts of Mode 4",
-      "outcome": "hosted",
-      "needs": "sega-vdp-python"
-    },
-    {
-      "id": "line-interrupt-test-1",
-      "title": "Line Interrupt Test #1, by Charles MacDonald",
-      "sha256": "3a5538cf3592ce83378cb6592d00ab0c9a39c0ce093d12c32982977d615254d7",
-      "source": "~/sms-artifacts/htgdb/Master EverDrive/5 Tools & Service Test Carts.zip",
-      "exercises": "the line counter and line interrupt, which this part does not have",
-      "outcome": "hosted",
-      "needs": "sega-vdp-python"
-    },
-    {
-      "id": "bg-test-0-01",
-      "title": "BG Test 0.01",
-      "sha256": "1bf18c7a722b8d2ab46cc011127a710a3c0ee8444fe0a77a0e74f3406920e6a5",
-      "source": "~/sms-artifacts/htgdb/Master EverDrive/5 Tools & Service Test Carts.zip",
-      "exercises": "Mode 4 background tiles and scrolling",
-      "outcome": "hosted",
-      "needs": "sega-vdp-python"
-    },
-    {
-      "id": "sprite-test",
-      "title": "Sprite Test",
-      "sha256": "d948fc4be6b54e88a2347ec3722ec1037d144c50cf5c37b0cb62fa6fccba966f",
-      "source": "~/sms-artifacts/htgdb/Master EverDrive/5 Tools & Service Test Carts.zip",
-      "exercises": "Mode 4 sprites",
-      "outcome": "hosted",
-      "needs": "sega-vdp-python"
-    },
-    {
-      "id": "test-suite-0-32",
-      "title": "Test Suite 0.32, by sverx",
-      "sha256": "18c08b24df7339efe8339cd16a9a1bd863cfeac393cc9dde988b8dd35d395a41",
-      "source": "~/sms-artifacts/htgdb/Master EverDrive/5 Tools & Service Test Carts.zip",
-      "exercises": "Mode 4 video timing, the counters and the interrupts",
-      "outcome": "hosted",
-      "needs": "sega-vdp-python"
-    },
-    {
-      "id": "v-counter-test",
-      "title": "V Counter Test Program, by Charles MacDonald",
-      "sha256": "70be2135231cc24ab624975c857df64366a42668d9793e25f210b720cd3db147",
-      "source": "~/sms-artifacts/htgdb/Master EverDrive/5 Tools & Service Test Carts.zip",
-      "exercises": "the vertical counter port, which this part does not have",
-      "outcome": "hosted",
-      "needs": "sega-vdp-python"
-    },
-    {
-      "id": "palette-tool-1-0",
-      "title": "Palette Tool 1.0",
-      "sha256": "7b01ec09b9a7ea2f1224ac36fb06c44dfd6d3d0f14d19b22006240e723272165",
-      "source": "~/sms-artifacts/htgdb/Master EverDrive/5 Tools & Service Test Carts.zip",
-      "exercises": "the Mode 4 colour RAM",
-      "outcome": "hosted",
-      "needs": "sega-vdp-python"
     }
   ]
 }

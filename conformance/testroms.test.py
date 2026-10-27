@@ -302,15 +302,31 @@ class MainTest(unittest.TestCase):
         # Assert
         self.assertEqual(code, 0)
 
+    def test_with_nothing_named_it_reads_what_external_holds(self) -> None:
+        # Arrange
+        folder = Path(tempfile.mkdtemp())
+        record = a_record(folder, A_PROGRAM, verdict=["MEMORY OK"])
+        held_in(folder, A_PROGRAM)
+        environment = {k: v for k, v in os.environ.items() if k != testroms.PLACES}
+
+        # Act
+        with mock.patch.dict(os.environ, environment, clear=True):
+            code = testroms.main([], record, kept=folder)
+
+        # Assert
+        self.assertEqual(code, 0)
+
 
 class NothingToRunTest(unittest.TestCase):
     def test_with_no_image_anywhere_it_exits_two(self) -> None:
         # Arrange
         environment = {k: v for k, v in os.environ.items() if k != testroms.PLACES}
 
+        nothing = Path(tempfile.mkdtemp()) / "external"
+
         # Act
         with mock.patch.dict(os.environ, environment, clear=True):
-            code = testroms.main([])
+            code = testroms.main([], kept=nothing)
 
         # Assert
         self.assertEqual(code, testroms.NOTHING_TO_RUN)

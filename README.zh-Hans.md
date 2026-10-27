@@ -8,7 +8,7 @@
 [![Release](https://img.shields.io/github/v/release/gufranco/ti-tms9918-python)](https://github.com/gufranco/ti-tms9918-python/releases)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-**348** 个不同的 SG-1000 镜像各启动 **600** 帧，**0** 个属性失败（涵盖其中 **203** 个零售版镜像），在手册中定位到 **64** 处引文，**3** 款芯片，**769** 个测试，**100%** 语句和分支覆盖率，无依赖
+**348** 个不同的 SG-1000 镜像各启动 **600** 帧，**0** 个属性失败（涵盖其中 **203** 个零售版镜像），在手册中定位到 **64** 处引文，**3** 款芯片，**813** 个测试，**100%** 语句和分支覆盖率，无依赖
 
 ```python
 import tms9918
@@ -255,7 +255,7 @@ print(burst(41))
 ## 普查
 
 ```bash
-python3 -m conformance.census /path/to/sg1000/library --frames 600 --jobs 10
+python3 -m conformance.census "external/SG-1000" --frames 600 --jobs 10
 ```
 
 普查在一块 SG-1000 主板上，用 `zilog-z80-python` 处理器启动 SG-1000 库中的每个镜像，并让每个镜像运行固定的帧数。它接受目录、zip 归档和单个镜像，并按摘要对每个不同的镜像只计数一次。它打印一份摘要，写入 [`conformance/corpus.json`](conformance/corpus.json)，并在某个属性被破坏时以 1 退出。

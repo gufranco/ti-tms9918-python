@@ -8,7 +8,7 @@ Texas InstrumentsのTMS9918A、TMS9928A、TMS9929Aビデオディスプレイプ
 [![Release](https://img.shields.io/github/v/release/gufranco/ti-tms9918-python)](https://github.com/gufranco/ti-tms9918-python/releases)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-異なるSG-1000イメージ**348**本をそれぞれ**600**フレーム起動、市販の**203**本で性質の不合格**0**件、マニュアル内で所在を確認した引用**64**件、**3**品種、テスト**769**件、ステートメントとブランチのカバレッジ**100%**、依存関係なし
+異なるSG-1000イメージ**348**本をそれぞれ**600**フレーム起動、市販の**203**本で性質の不合格**0**件、マニュアル内で所在を確認した引用**64**件、**3**品種、テスト**813**件、ステートメントとブランチのカバレッジ**100%**、依存関係なし
 
 ```python
 import tms9918
@@ -255,7 +255,7 @@ Graphics Iのフレームのアクティブ表示中に、TMS9929Aへ3バイト�
 ## 全数調査
 
 ```bash
-python3 -m conformance.census /path/to/sg1000/library --frames 600 --jobs 10
+python3 -m conformance.census "external/SG-1000" --frames 600 --jobs 10
 ```
 
 全数調査は、SG-1000ライブラリ内のすべてのイメージを、`zilog-z80-python`プロセッサを載せたSG-1000ボード上で起動し、それぞれを決まったフレーム数だけ実行します。ディレクトリ、ZIPアーカイブ、単体のイメージを受け付け、異なるイメージをダイジェストで1回ずつ数えます。概要を出力し、[`conformance/corpus.json`](conformance/corpus.json)を書き出し、性質が破れた場合は終了コード1で終了します。

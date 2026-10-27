@@ -8,7 +8,7 @@ English | [日本語](README.ja.md) | [简体中文](README.zh-Hans.md) | [繁�
 [![Release](https://img.shields.io/github/v/release/gufranco/ti-tms9918-python)](https://github.com/gufranco/ti-tms9918-python/releases)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-**348** distinct SG-1000 images booted for **600** frames each, **0** property failures over the **203** retail ones, **64** quotes located in the manual, **3** parts, **769** tests, **100%** statement and branch coverage, no dependencies
+**348** distinct SG-1000 images booted for **600** frames each, **0** property failures over the **203** retail ones, **64** quotes located in the manual, **3** parts, **813** tests, **100%** statement and branch coverage, no dependencies
 
 ```python
 import tms9918
@@ -255,7 +255,7 @@ Three bytes go to a TMS9929A during the active display of a Graphics I frame. At
 ## The census
 
 ```bash
-python3 -m conformance.census /path/to/sg1000/library --frames 600 --jobs 10
+python3 -m conformance.census "external/SG-1000" --frames 600 --jobs 10
 ```
 
 The census boots every image in an SG-1000 library on an SG-1000 board, with the `zilog-z80-python` processor, and runs each for a fixed number of frames. It accepts directories, zip archives and single images, and counts each distinct image once by digest. It prints a summary, writes [`conformance/corpus.json`](conformance/corpus.json), and exits 1 when a property breaks.
