@@ -4,9 +4,11 @@ The Texas Instruments TMS9918A, TMS9928A and TMS9929A video display processors i
 
 English | [日本語](README.ja.md) | [简体中文](README.zh-Hans.md) | [繁體中文（香港）](README.zh-HK.md)
 
-[![CI](https://github.com/gufranco/ti-tms9918-python/actions/workflows/ci.yml/badge.svg)](https://github.com/gufranco/ti-tms9918-python/actions/workflows/ci.yml)
-[![Release](https://img.shields.io/github/v/release/gufranco/ti-tms9918-python)](https://github.com/gufranco/ti-tms9918-python/releases)
-[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+[![ci](https://img.shields.io/github/actions/workflow/status/gufranco/ti-tms9918-python/ci.yml?branch=main&style=flat-square&label=ci)](https://github.com/gufranco/ti-tms9918-python/actions/workflows/ci.yml)
+[![release](https://img.shields.io/github/v/release/gufranco/ti-tms9918-python?style=flat-square&label=release)](https://github.com/gufranco/ti-tms9918-python/releases/latest)
+[![coverage](https://img.shields.io/badge/coverage-100%25-brightgreen?style=flat-square)](https://github.com/gufranco/ti-tms9918-python/actions/workflows/ci.yml)
+[![openssf scorecard](https://img.shields.io/ossf-scorecard/github.com/gufranco/ti-tms9918-python?style=flat-square&label=openssf%20scorecard)](https://scorecard.dev/viewer/?uri=github.com/gufranco/ti-tms9918-python)
+[![license](https://img.shields.io/github/license/gufranco/ti-tms9918-python?style=flat-square&label=license)](LICENSE)
 
 **348** distinct SG-1000 images booted for **600** frames each, **0** property failures over the **203** retail ones, **64** quotes located in the manual, **3** parts, **822** tests, **100%** statement and branch coverage, no dependencies
 
