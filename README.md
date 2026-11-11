@@ -10,7 +10,7 @@ English | [日本語](README.ja.md) | [简体中文](README.zh-Hans.md) | [繁�
 [![openssf scorecard](https://img.shields.io/ossf-scorecard/github.com/gufranco/ti-tms9918-python?style=flat-square&label=openssf%20scorecard)](https://scorecard.dev/viewer/?uri=github.com/gufranco/ti-tms9918-python)
 [![license](https://img.shields.io/github/license/gufranco/ti-tms9918-python?style=flat-square&label=license)](LICENSE)
 
-**348** distinct SG-1000 images booted for **600** frames each, **0** property failures over the **203** retail ones, **64** quotes located in the manual, **3** parts, **822** tests, **100%** statement and branch coverage, no dependencies
+**348** distinct SG-1000 images booted for **600** frames each, **0** property failures over the **203** retail ones, **64** quotes located in the manual, **3** parts, **823** tests, **100%** statement and branch coverage, no dependencies
 
 ```python
 import tms9918

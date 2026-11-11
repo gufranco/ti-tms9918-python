@@ -10,7 +10,7 @@
 [![openssf scorecard](https://img.shields.io/ossf-scorecard/github.com/gufranco/ti-tms9918-python?style=flat-square&label=openssf%20scorecard)](https://scorecard.dev/viewer/?uri=github.com/gufranco/ti-tms9918-python)
 [![license](https://img.shields.io/github/license/gufranco/ti-tms9918-python?style=flat-square&label=license)](LICENSE)
 
-**348** 個不同的 SG-1000 映像檔各啟動 **600** 幀，其中 **203** 個零售版映像檔的屬性失敗為 **0**，在手冊中找到 **64** 處引文，**3** 款晶片，**822** 個測試，**100%** 語句和分支覆蓋率，沒有依賴套件
+**348** 個不同的 SG-1000 映像檔各啟動 **600** 幀，其中 **203** 個零售版映像檔的屬性失敗為 **0**，在手冊中找到 **64** 處引文，**3** 款晶片，**823** 個測試，**100%** 語句和分支覆蓋率，沒有依賴套件
 
 ```python
 import tms9918
