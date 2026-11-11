@@ -10,7 +10,7 @@ Texas InstrumentsのTMS9918A、TMS9928A、TMS9929Aビデオディスプレイプ
 [![openssf scorecard](https://img.shields.io/ossf-scorecard/github.com/gufranco/ti-tms9918-python?style=flat-square&label=openssf%20scorecard)](https://scorecard.dev/viewer/?uri=github.com/gufranco/ti-tms9918-python)
 [![license](https://img.shields.io/github/license/gufranco/ti-tms9918-python?style=flat-square&label=license)](LICENSE)
 
-異なるSG-1000イメージ**348**本をそれぞれ**600**フレーム起動、市販の**203**本で性質の不合格**0**件、マニュアル内で所在を確認した引用**64**件、**3**品種、テスト**822**件、ステートメントとブランチのカバレッジ**100%**、依存関係なし
+異なるSG-1000イメージ**348**本をそれぞれ**600**フレーム起動、市販の**203**本で性質の不合格**0**件、マニュアル内で所在を確認した引用**64**件、**3**品種、テスト**823**件、ステートメントとブランチのカバレッジ**100%**、依存関係なし
 
 ```python
 import tms9918
